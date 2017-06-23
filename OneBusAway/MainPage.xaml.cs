@@ -17,12 +17,45 @@ namespace OneBusAway
         public MainPage()
         {
             InitializeComponent();
-            buttonMenu.Content = new SymbolIcon(Symbol.More);
             buttonAdd.Content = new SymbolIcon(Symbol.Add);
             buttonAddRandom.Content = new SymbolIcon(Symbol.Shuffle);
             buttonAddPreset.Content = new SymbolIcon(Symbol.List);
             radioL1.IsChecked = true;
             checkEnglish.IsChecked = true;
+            for (int i = 0; i < 100; i++)
+            {
+                RowDefinition row = new RowDefinition();
+                row.Height = GridLength.Auto;
+                gridMain.RowDefinitions.Add(row);
+
+                TEXT_ROUTE_NUMBER[i] = new TextBlock();
+                TEXT_ROUTE_NUMBER[i].FontSize = 48;
+                TEXT_ROUTE_NUMBER[i].Margin = new Thickness(10, 0, 50, 0);
+                gridMain.Children.Add(TEXT_ROUTE_NUMBER[i]);
+                Grid.SetRow(TEXT_ROUTE_NUMBER[i], i + 1);
+
+                STACK[i] = new StackPanel();
+                gridMain.Children.Add(STACK[i]);
+                Grid.SetRow(STACK[i], i + 1);
+                Grid.SetColumn(STACK[i], 1);
+
+                TEXT_DESTINATION[i] = new TextBlock();
+                TEXT_DESTINATION[i].FontSize = 32;
+                STACK[i].Children.Add(TEXT_DESTINATION[i]);
+
+                TEXT_SMALL_TEXT[i] = new TextBlock();
+                TEXT_SMALL_TEXT[i].FontSize = 12;
+                STACK[i].Children.Add(TEXT_SMALL_TEXT[i]);
+
+                TEXT_ARRIVAL[i] = new TextBlock();
+                TEXT_ARRIVAL[i].FontSize = 48;
+                TEXT_ARRIVAL[i].Margin = new Thickness(50, 0, 10, 0);
+                TEXT_ARRIVAL[i].HorizontalAlignment = HorizontalAlignment.Right;
+                gridMain.Children.Add(TEXT_ARRIVAL[i]);
+                Grid.SetRow(TEXT_ARRIVAL[i], i + 1);
+                Grid.SetColumn(TEXT_ARRIVAL[i], 2);
+            }
+            gridMain.RowDefinitions.Add(new RowDefinition());
             timer1.Tick += TimerEvent1;
             timer1.Interval = new TimeSpan(0, 0, 0, 0, 100);
             timer1.Start();
@@ -36,13 +69,18 @@ namespace OneBusAway
 
         private List<string> STATIONS = new List<string>();     // stations user selected
         private List<string> ALL_STATIONS = new List<string>(); // all stations for an agency
-        private string[] ROUTE_NUMBER = new string[MAX_STATIONS];
-        private string[] DESTINATION = new string[MAX_STATIONS];
-        private string[] VEHICLE_ID = new string[MAX_STATIONS];
-        private long[] ARRIVAL = new long[MAX_STATIONS];
-        private const int MAX_STATIONS = 8;
+        private string[] ROUTE_NUMBER = new string[100];
+        private string[] DESTINATION = new string[100];
+        private string[] VEHICLE_ID = new string[100];
+        private long[] ARRIVAL = new long[100];
+        private int MAX_STATIONS;
         private const int SERVER_REFRESH = 10; // interval to ping the server
         private HttpClient CLIENT = new HttpClient();
+        private TextBlock[] TEXT_ROUTE_NUMBER = new TextBlock[100];
+        private TextBlock[] TEXT_DESTINATION = new TextBlock[100];
+        private TextBlock[] TEXT_SMALL_TEXT = new TextBlock[100];
+        private TextBlock[] TEXT_ARRIVAL = new TextBlock[100];
+        private StackPanel[] STACK = new StackPanel[100];
         private DispatcherTimer timer1 = new DispatcherTimer();  // used to refresh all text blocks
         private DispatcherTimer timer10 = new DispatcherTimer(); // used to ping the server
         private DispatcherTimer timerToggle = new DispatcherTimer(); // used to alternate between Chinese / English text
@@ -52,38 +90,13 @@ namespace OneBusAway
         // Refreshes all text blocks.
         private void TimerEvent1(object sender, object e)
         {
-            min1.Text = textCheck(ARRIVAL[0]);
-            min2.Text = textCheck(ARRIVAL[1]);
-            min3.Text = textCheck(ARRIVAL[2]);
-            min4.Text = textCheck(ARRIVAL[3]);
-            min5.Text = textCheck(ARRIVAL[4]);
-            min6.Text = textCheck(ARRIVAL[5]);
-            min7.Text = textCheck(ARRIVAL[6]);
-            min8.Text = textCheck(ARRIVAL[7]);
-            rt1.Text = textCheck(ROUTE_NUMBER[0]);
-            rt2.Text = textCheck(ROUTE_NUMBER[1]);
-            rt3.Text = textCheck(ROUTE_NUMBER[2]);
-            rt4.Text = textCheck(ROUTE_NUMBER[3]);
-            rt5.Text = textCheck(ROUTE_NUMBER[4]);
-            rt6.Text = textCheck(ROUTE_NUMBER[5]);
-            rt7.Text = textCheck(ROUTE_NUMBER[6]);
-            rt8.Text = textCheck(ROUTE_NUMBER[7]);
-            d1.Text = textCheck(DESTINATION[0]);
-            d2.Text = textCheck(DESTINATION[1]);
-            d3.Text = textCheck(DESTINATION[2]);
-            d4.Text = textCheck(DESTINATION[3]);
-            d5.Text = textCheck(DESTINATION[4]);
-            d6.Text = textCheck(DESTINATION[5]);
-            d7.Text = textCheck(DESTINATION[6]);
-            d8.Text = textCheck(DESTINATION[7]);
-            ds1.Text = textCheck(ARRIVAL[0], VEHICLE_ID[0]);
-            ds2.Text = textCheck(ARRIVAL[1], VEHICLE_ID[1]);
-            ds3.Text = textCheck(ARRIVAL[2], VEHICLE_ID[2]);
-            ds4.Text = textCheck(ARRIVAL[3], VEHICLE_ID[3]);
-            ds5.Text = textCheck(ARRIVAL[4], VEHICLE_ID[4]);
-            ds6.Text = textCheck(ARRIVAL[5], VEHICLE_ID[5]);
-            ds7.Text = textCheck(ARRIVAL[6], VEHICLE_ID[6]);
-            ds8.Text = textCheck(ARRIVAL[7], VEHICLE_ID[7]);
+            for (int i = 0; i < MAX_STATIONS; i++)
+            {
+                TEXT_ROUTE_NUMBER[i].Text = textCheck(ROUTE_NUMBER[i]);
+                TEXT_DESTINATION[i].Text = textCheck(DESTINATION[i]);
+                TEXT_SMALL_TEXT[i].Text = textCheck(ARRIVAL[i], VEHICLE_ID[i]);
+                TEXT_ARRIVAL[i].Text = textCheck(ARRIVAL[i]);
+            }
         }
 
         private async void TimerEvent10(object sender, object e)
@@ -156,19 +169,12 @@ namespace OneBusAway
         {
             STATIONS.Clear();
             richTextBox.Blocks.Clear();
-            ROUTE_NUMBER = new string[MAX_STATIONS];
-            DESTINATION = new string[MAX_STATIONS];
-            VEHICLE_ID = new string[MAX_STATIONS];
-            ARRIVAL = new long[MAX_STATIONS];
             TimerEvent10(null, null);
         }
 
         private async void button_Click_AddRandom(object sender, RoutedEventArgs e)
         {
-            buttonAdd.IsEnabled = false;
-            buttonAddRandom.IsEnabled = false;
-            buttonClear.IsEnabled = false;
-            textBox.IsEnabled = false;
+            enableControls(false);
             // agencies:
             // 1 - King County Metro
             // 3 - Pierce Transit
@@ -244,6 +250,12 @@ namespace OneBusAway
             addStation("1_575", false, true);
             addStation("1_578", true, true);
         }
+
+        private void button_Click_Refresh(object sender, RoutedEventArgs e)
+        {
+            TimerEvent10(null, null);
+        }
+
         private void TimerEventToggle(object sender, object e)
         {
             CHINESE = !CHINESE;
@@ -336,11 +348,11 @@ namespace OneBusAway
 
         T[] sortUsingGivenOrder<T>(List<T> item, List<int> order)
         {
-            T[] sorted = new T[MAX_STATIONS];
+            T[] sorted = new T[100];
             for (int i = 0; i < order.Count; i++)
             {
                 int position = order[i];
-                if (position < MAX_STATIONS && i < item.Count)
+                if (position < 100 && i < item.Count)
                     sorted[position] = item[i];
             }
             return sorted;
@@ -401,10 +413,7 @@ namespace OneBusAway
 
         private async void addStation(string station, bool refresh = true, bool forceSuccess = false)
         {
-            buttonAdd.IsEnabled = false;
-            buttonAddRandom.IsEnabled = false;
-            buttonClear.IsEnabled = false;
-            textBox.IsEnabled = false;
+            enableControls(false);
             if (!station.Contains("_"))
                 station = "1_" + station;
             string url = "http://api.pugetsound.onebusaway.org/api/where/stop/"
@@ -444,10 +453,7 @@ namespace OneBusAway
                 }
                 catch { }
             }
-            buttonAdd.IsEnabled = true;
-            buttonAddRandom.IsEnabled = true;
-            buttonClear.IsEnabled = true;
-            textBox.IsEnabled = true;
+            enableControls(true);
         }
 
         private void textBox_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -474,6 +480,54 @@ namespace OneBusAway
                 else
                     checkEnglish.IsEnabled = false;
             }
+        }
+
+        private void Flyout_Opened(object sender, object e)
+        {
+            textBox.Focus(FocusState.Keyboard);
+        }
+
+        private void slider_ValueChanged(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            MAX_STATIONS = (int)slider.Value;
+            for (int i = 0; i < 100; i++)
+            {
+                try
+                {
+                    if (i < MAX_STATIONS)
+                    {
+                        int scale = MAX_STATIONS < 5 ? 4 : MAX_STATIONS;
+                        TEXT_ROUTE_NUMBER[i].FontSize = 384D / scale;
+                        TEXT_DESTINATION[i].FontSize = 288D / scale;
+                        TEXT_SMALL_TEXT[i].FontSize = 96D / scale;
+                        TEXT_ARRIVAL[i].FontSize = 384D / scale;
+                    }
+                    else
+                    {
+                        TEXT_ROUTE_NUMBER[i].Text = "";
+                        TEXT_DESTINATION[i].Text = "";
+                        TEXT_SMALL_TEXT[i].Text = "";
+                        TEXT_ARRIVAL[i].Text = "";
+                    }
+                }
+                catch { }
+            }
+        }
+
+        private void enableControls(bool enable)
+        {
+            buttonAdd.IsEnabled = enable;
+            buttonAddRandom.IsEnabled = enable;
+            buttonClear.IsEnabled = enable;
+            buttonAddPreset.IsEnabled = enable;
+            buttonPreset1.IsEnabled = enable;
+            buttonPreset2.IsEnabled = enable;
+            buttonPreset3.IsEnabled = enable;
+            buttonPreset4.IsEnabled = enable;
+            textBox.IsEnabled = enable;
+            slider.IsEnabled = enable;
+            progressBar.Visibility = enable ? Visibility.Collapsed : Visibility.Visible;
+            textBox.Focus(FocusState.Keyboard);
         }
 
         private string translate(string s)
@@ -537,12 +591,15 @@ namespace OneBusAway
             s = s.Replace("bellevue", "貝爾維尤");
             s = s.Replace("broadway", "百老匯");
             s = s.Replace("cascadia", "卡斯卡迪亞");
+            s = s.Replace("commerce", "商業");
             s = s.Replace("connecto", "連接");
             s = s.Replace("district", "區");
             s = s.Replace("downtown", "市中心");
             s = s.Replace("enumclaw", "恩努克勞");
+            s = s.Replace("exchange", "交流");
             s = s.Replace("factoria", "法克特里亞");
             s = s.Replace("fairview", "錦繡");
+            s = s.Replace("fairwood", "大快活");
             s = s.Replace("hospital", "醫院");
             s = s.Replace("houghton", "霍頓");
             s = s.Replace("issaquah", "伊瑟闊");
@@ -554,6 +611,7 @@ namespace OneBusAway
             s = s.Replace("magnuson", "馬格努森");
             s = s.Replace("mckinley", "麥金利");
             s = s.Replace("meridian", "子午綫");
+            s = s.Replace("mt baker", "麵包山");
             s = s.Replace("mukilteo", "慕基特奧");
             s = s.Replace("outbound", "往外");
             s = s.Replace("prentice", "徒弟");
@@ -584,7 +642,9 @@ namespace OneBusAway
             s = s.Replace("kenmore", "肯莫爾");
             s = s.Replace("kinnear", "金尼爾");
             s = s.Replace("landing", "登陸");
+            s = s.Replace("madigan", "馬迪根");
             s = s.Replace("madison", "麥迪遜");
+            s = s.Replace("madrona", "石南");
             s = s.Replace("mariner", "水手");
             s = s.Replace("olympia", "奧林匹亞");
             s = s.Replace("othello", "奧賽羅");
@@ -597,6 +657,7 @@ namespace OneBusAway
             s = s.Replace("sea tac", "西塔科");
             s = s.Replace("sea-tac", "西塔科");
             s = s.Replace("seattle", "西雅圖");
+            s = s.Replace("shuttle", "穿梭");
             s = s.Replace("sounder", "聲音");
             s = s.Replace("station", "站");
             s = s.Replace("stevens", "司提反");
@@ -606,6 +667,7 @@ namespace OneBusAway
             s = s.Replace("tulalip", "圖拉利普");
             s = s.Replace("up-town", "住宅區");
             s = s.Replace("village", "村");
+            s = s.Replace("warrior", "戰士");
             // 6
             s = s.Replace("alaska", "阿拉斯加");
             s = s.Replace("auburn", "奧本");
@@ -617,6 +679,7 @@ namespace OneBusAway
             s = s.Replace("canyon", "峽谷");
             s = s.Replace("casino", "賭場");
             s = s.Replace("center", "中心");
+            s = s.Replace("cherry", "櫻桃");
             s = s.Replace("church", "教會");
             s = s.Replace("colman", "科爾曼");
             s = s.Replace("fedway", "聯邦道");
@@ -638,6 +701,7 @@ namespace OneBusAway
             s = s.Replace("smokey", "煙熏");
             s = s.Replace("square", "廣場");
             s = s.Replace("street", "街");
+            s = s.Replace("summit", "高峰");
             s = s.Replace("tacoma", "塔科馬");
             s = s.Replace("uptown", "住宅區");
             s = s.Replace("valley", "谷");
@@ -653,12 +717,15 @@ namespace OneBusAway
             s = s.Replace("bridge", "橋");
             s = s.Replace("clyde", "克萊德");
             s = s.Replace("coupe", "庫珀");
+            s = s.Replace("creek", "溪");
             s = s.Replace("crest", "波峰");
             s = s.Replace("falls", "瀑布");
             s = s.Replace("first", "第一");
             s = s.Replace("green", "綠");
+            s = s.Replace("inter", "間");
             s = s.Replace("kings", "國王");
             s = s.Replace("lakes", "湖");
+            s = s.Replace("lands", "地");
             s = s.Replace("lewis", "路易斯");
             s = s.Replace("lopez", "洛佩兹");
             s = s.Replace("lower", "下");
@@ -677,6 +744,7 @@ namespace OneBusAway
             s = s.Replace("shore", "岸");
             s = s.Replace("south", "南");
             s = s.Replace("super", "非常好");
+            s = s.Replace("swamp", "沼澤");
             s = s.Replace("swift", "迅速");
             s = s.Replace("totem", "圖騰");
             s = s.Replace("union", "聯合");
@@ -695,6 +763,8 @@ namespace OneBusAway
             s = s.Replace("dtwn", "市中心");
             s = s.Replace("dwtn", "市中心");
             s = s.Replace("east", "東");
+            s = s.Replace("ever", "常");
+            s = s.Replace("fair", "公平");
             s = s.Replace("firs", "冷杉");
             s = s.Replace("gate", "閘");
             s = s.Replace("gold", "金");
@@ -713,16 +783,21 @@ namespace OneBusAway
             s = s.Replace("mont", "蒙");
             s = s.Replace("over", "上");
             s = s.Replace("park", "公園");
+            s = s.Replace("pike", "梭魚");
             s = s.Replace("port", "港");
+            s = s.Replace("post", "郵政");
             s = s.Replace("shaw", "肖");
+            s = s.Replace("tech", "科技");
             s = s.Replace("town", "市");
             s = s.Replace("road", "路");
             s = s.Replace("sand", "沙");
             s = s.Replace("stcr", "電車");
             s = s.Replace("twin", "雙");
+            s = s.Replace("vasa", "瓦薩");
             s = s.Replace("wedg", "楔");
             s = s.Replace("west", "西");
             s = s.Replace("wood", "木");
+            s = s.Replace("zone", "區");
             // 3
             s = s.Replace("and", "及");
             s = s.Replace("ash", "灰");
@@ -736,6 +811,7 @@ namespace OneBusAway
             s = s.Replace("slu", "南湖聯合");
             s = s.Replace("sta", "站");
             s = s.Replace("stn", "站");
+            s = s.Replace("tac", "塔科馬");
             s = s.Replace("tcc", "塔科馬社區學院");
             s = s.Replace("via", "經");
             s = s.Replace("way", "道");
@@ -757,10 +833,14 @@ namespace OneBusAway
             // 1
             if (!s.Contains("e 綫") && !s.Contains("e1"))
             {
-                s = s.Replace("n", "北");
-                s = s.Replace("e", "東");
-                s = s.Replace("s", "南");
-                s = s.Replace("w", "西");
+                s = s.Replace(" n", " 北");
+                s = s.Replace(" e", " 東");
+                s = s.Replace(" s", " 南");
+                s = s.Replace(" w", " 西");
+                s = s.Replace("n ", "北 ");
+                s = s.Replace("e ", "東 ");
+                s = s.Replace("s ", "南 ");
+                s = s.Replace("w ", "西 ");
             }
 
             return s.Trim().ToUpper();

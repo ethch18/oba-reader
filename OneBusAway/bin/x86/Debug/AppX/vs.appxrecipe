@@ -31,13 +31,13 @@
     <AppXManifest Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\bin\x86\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-23T04:46:17.624</Modified>
+      <Modified>2017-06-23T21:38:03.121</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\bin\x86\Debug\OneBusAway.exe">
       <PackagePath>entrypoint\OneBusAway.exe</PackagePath>
-      <Modified>2017-06-23T04:46:16.418</Modified>
+      <Modified>2017-06-23T21:38:02.736</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Jonathan\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -540,7 +540,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\bin\x86\Debug\OneBusAway.xr.xml">
       <PackagePath>OneBusAway.xr.xml</PackagePath>
-      <Modified>2017-06-23T04:10:37.637</Modified>
+      <Modified>2017-06-23T21:04:16.243</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\10.0.15063.0\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
@@ -549,11 +549,11 @@
     <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\bin\x86\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-23T04:46:17.331</Modified>
+      <Modified>2017-06-23T21:13:04.773</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\bin\x86\Debug\Core\OneBusAway.exe">
       <PackagePath>OneBusAway.exe</PackagePath>
-      <Modified>2017-06-23T04:46:17.620</Modified>
+      <Modified>2017-06-23T21:38:03.113</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
