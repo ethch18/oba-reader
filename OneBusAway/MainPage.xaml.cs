@@ -580,6 +580,7 @@ namespace OneBusAway
             s = s.Replace("inbound", "往内");
             s = s.Replace("jackson", "積臣");
             s = s.Replace("juanita", "胡安妮塔");
+            s = s.Replace("judkins", "賈金斯");
             s = s.Replace("kenmore", "肯莫爾");
             s = s.Replace("kinnear", "金尼爾");
             s = s.Replace("landing", "登陸");
