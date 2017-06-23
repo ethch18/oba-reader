@@ -1,0 +1,2 @@
+MainPackage=C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\bin\x86\Debug\OneBusAway_1.0.0.0_x86_Debug.appx
+SymbolPackage=C:\Users\Jonathan\Desktop\OneBusAway_1.0.0.0_Debug_Test\OneBusAway_1.0.0.0_x86_Debug.appxsym
