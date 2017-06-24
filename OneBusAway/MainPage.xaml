@@ -7,10 +7,10 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*" MinHeight="200"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="180"/>
+                    <ColumnDefinition Width="*" MinWidth="280"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -19,20 +19,32 @@
                 <Button x:Name="buttonAdd" Click="button_Click_Add" Width="40" Height="40" ToolTipService.ToolTip="Add" Grid.Column="1"/>
                 <Button x:Name="buttonAddRandom" Click="button_Click_AddRandom" Width="40" Height="40" ToolTipService.ToolTip="Add random stop" Grid.Column="2"/>
                 <Button x:Name="buttonAddPreset" Width="40" Height="40" ToolTipService.ToolTip="Use preset stops" Grid.Column="3" Flyout="{StaticResource FlyoutBase2}"/>
-                
-                <StackPanel Grid.Row="1" Grid.ColumnSpan="3">
-                    <RichTextBlock x:Name="richTextBox" Grid.Row="1" TextWrapping="NoWrap"/>
+
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="4">
+                    <ProgressBar x:Name="progressBar" IsIndeterminate="True" Visibility="Collapsed"/>
+                    <RichTextBlock x:Name="richTextBox" Grid.Row="1" TextWrapping="NoWrap" Margin="5"/>
                     <Button x:Name="buttonClear" Content="Clear all stops" Click="button_Click_Clear" Grid.Row="2"/>
+
+                    <TextBlock Text=""/>
 
                     <TextBlock Text="Text options"/>
                     <RadioButton x:Name="radioL1" Content="Default" GroupName="caps"/>
                     <RadioButton x:Name="radioL2" Content="lowercase" GroupName="caps"/>
                     <RadioButton x:Name="radioL3" Content="ALL CAPS" GroupName="caps"/>
 
+                    <TextBlock Text=""/>
+                    
+                    <TextBlock Text="Maximum arrivals to show"/>
+                    <Slider x:Name="slider" Minimum="1" ValueChanged="slider_ValueChanged" Value="8" />
+
+                    <TextBlock Text=""/>
+                    
                     <TextBlock Text="Language"/>
                     <CheckBox x:Name="checkEnglish" Content="English" Checked="languageChanged" Unchecked="languageChanged"/>
                     <CheckBox x:Name="checkChinese" Content="繁體中文 (beta)" Checked="languageChanged" Unchecked="languageChanged"/>
 
+                    <TextBlock Text=""/>
+                    
                     <ToggleSwitch x:Name="toggleSeconds" Header="Show seconds" IsOn="True"/>
 
                     <TextBlock x:Name="errorText" FontSize="12"/>
@@ -42,77 +54,27 @@
         <Flyout x:Key="FlyoutBase2">
             <StackPanel >
                 <TextBlock Text="Presets"/>
-                <Button Click="button_Click_AddPreset1" Content="Aurora Village Transit Center"/>
-                <Button Click="button_Click_AddPreset2" Content="Seattle Pacific University"/>
-                <Button Click="button_Click_AddPreset3" Content="University of Washington"/>
-                <Button Click="button_Click_AddPreset4" Content="Westlake"/>
+                <Button x:Name="buttonPreset1" Click="button_Click_AddPreset1" Content="Aurora Village Transit Center" Background="#00000000" Width="300" HorizontalContentAlignment="Left"/>
+                <Button x:Name="buttonPreset2" Click="button_Click_AddPreset2" Content="Seattle Pacific University" Background="#00000000" Width="300" HorizontalContentAlignment="Left"/>
+                <Button x:Name="buttonPreset3" Click="button_Click_AddPreset3" Content="University of Washington" Background="#00000000" Width="300" HorizontalContentAlignment="Left"/>
+                <Button x:Name="buttonPreset4" Click="button_Click_AddPreset4" Content="Westlake" Background="#00000000" Width="300" HorizontalContentAlignment="Left"/>
             </StackPanel>
         </Flyout>
     </Page.Resources>
 
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid x:Name="gridMain" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MinWidth="100"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <Button x:Name="buttonMenu" Width="40" Height="40" Grid.ColumnSpan="3" Flyout="{StaticResource FlyoutBase1}" HorizontalAlignment="Right"/>
-
-        <TextBlock x:Name="rt1" FontSize="48" Grid.RowSpan="2" Grid.Row="1" Margin="5,0"/>
-        <TextBlock x:Name="rt2" FontSize="48" Grid.RowSpan="2" Grid.Row="3" Margin="5,0"/>
-        <TextBlock x:Name="rt3" FontSize="48" Grid.RowSpan="2" Grid.Row="5" Margin="5,0"/>
-        <TextBlock x:Name="rt4" FontSize="48" Grid.RowSpan="2" Grid.Row="7" Margin="5,0"/>
-        <TextBlock x:Name="rt5" FontSize="48" Grid.RowSpan="2" Grid.Row="9" Margin="5,0"/>
-        <TextBlock x:Name="rt6" FontSize="48" Grid.RowSpan="2" Grid.Row="11" Margin="5,0"/>
-        <TextBlock x:Name="rt7" FontSize="48" Grid.RowSpan="2" Grid.Row="13" Margin="5,0"/>
-        <TextBlock x:Name="rt8" FontSize="48" Grid.RowSpan="2" Grid.Row="15" Margin="5,0"/>
-
-        <TextBlock x:Name="d1" FontSize="32" Grid.Row="1" Grid.Column="1"/>
-        <TextBlock x:Name="d2" FontSize="32" Grid.Row="3" Grid.Column="1"/>
-        <TextBlock x:Name="d3" FontSize="32" Grid.Row="5" Grid.Column="1"/>
-        <TextBlock x:Name="d4" FontSize="32" Grid.Row="7" Grid.Column="1"/>
-        <TextBlock x:Name="d5" FontSize="32" Grid.Row="9" Grid.Column="1"/>
-        <TextBlock x:Name="d6" FontSize="32" Grid.Row="11" Grid.Column="1"/>
-        <TextBlock x:Name="d7" FontSize="32" Grid.Row="13" Grid.Column="1"/>
-        <TextBlock x:Name="d8" FontSize="32" Grid.Row="15" Grid.Column="1"/>
-
-        <TextBlock x:Name="ds1" FontSize="12" Grid.Row="2" Grid.Column="1"/>
-        <TextBlock x:Name="ds2" FontSize="12" Grid.Row="4" Grid.Column="1"/>
-        <TextBlock x:Name="ds3" FontSize="12" Grid.Row="6" Grid.Column="1"/>
-        <TextBlock x:Name="ds4" FontSize="12" Grid.Row="8" Grid.Column="1"/>
-        <TextBlock x:Name="ds5" FontSize="12" Grid.Row="10" Grid.Column="1"/>
-        <TextBlock x:Name="ds6" FontSize="12" Grid.Row="12" Grid.Column="1"/>
-        <TextBlock x:Name="ds7" FontSize="12" Grid.Row="14" Grid.Column="1"/>
-        <TextBlock x:Name="ds8" FontSize="12" Grid.Row="16" Grid.Column="1"/>
-
-        <TextBlock x:Name="min1" FontSize="48" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" Margin="5,0"/>
-        <TextBlock x:Name="min2" FontSize="48" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="2" Grid.RowSpan="2" Margin="5,0"/>
-        <TextBlock x:Name="min3" FontSize="48" HorizontalAlignment="Right" Grid.Row="5" Grid.Column="2" Grid.RowSpan="2" Margin="5,0"/>
-        <TextBlock x:Name="min4" FontSize="48" HorizontalAlignment="Right" Grid.Row="7" Grid.Column="2" Grid.RowSpan="2" Margin="5,0"/>
-        <TextBlock x:Name="min5" FontSize="48" HorizontalAlignment="Right" Grid.Row="9" Grid.Column="2" Grid.RowSpan="2" Margin="5,0"/>
-        <TextBlock x:Name="min6" FontSize="48" HorizontalAlignment="Right" Grid.Row="11" Grid.Column="2" Grid.RowSpan="2" Margin="5,0"/>
-        <TextBlock x:Name="min7" FontSize="48" HorizontalAlignment="Right" Grid.Row="13" Grid.Column="2" Grid.RowSpan="2" Margin="5,0"/>
-        <TextBlock x:Name="min8" FontSize="48" HorizontalAlignment="Right" Grid.Row="15" Grid.Column="2" Grid.RowSpan="2" Margin="5,0"/>
-
+        <CommandBar Background="#00000000" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+            <AppBarButton Click="button_Click_Refresh" Icon="Refresh" Label="Refresh"/>
+            <AppBarButton Icon="Setting" Label="Settings" Flyout="{StaticResource FlyoutBase1}"/>
+        </CommandBar>
     </Grid>
 </Page>

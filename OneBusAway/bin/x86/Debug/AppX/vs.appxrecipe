@@ -10,7 +10,7 @@
     <PackageArchitecture>x86</PackageArchitecture>
     <PackageIdentityName>c8ee65e7-1a60-46a3-a8f6-95f63a92a280</PackageIdentityName>
     <PackageIdentityPublisher>CN=Jonathan</PackageIdentityPublisher>
-    <IntermediateOutputPath>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\obj\x86\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\obj\x86\Debug\</IntermediateOutputPath>
     <RemoteDeploymentType>
     </RemoteDeploymentType>
     <PackageRegistrationPath>
@@ -18,7 +18,7 @@
     <RemoveNonLayoutFiles>true</RemoveNonLayoutFiles>
     <DeployOptionalPackages>false</DeployOptionalPackages>
     <WindowsSdkPath>C:\Program Files %28x86%29\Windows Kits\10\</WindowsSdkPath>
-    <LayoutDir>C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\bin\x86\Debug\AppX</LayoutDir>
+    <LayoutDir>C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\bin\x86\Debug\AppX</LayoutDir>
     <RegisteredManifestChecksum>3270CF264A0A7C583C56CBDB72D20F55932C69F40CF36625751B2DB47F2728E2</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>c8ee65e7-1a60-46a3-a8f6-95f63a92a280_1.0.0.0_x86__w7mxzscebfmq4</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>c8ee65e7-1a60-46a3-a8f6-95f63a92a280_w7mxzscebfmq4!App</RegisteredUserModeAppID>
@@ -28,16 +28,16 @@
     <JitOptimizationSuppressed>True</JitOptimizationSuppressed>
   </PropertyGroup>
   <ItemGroup>
-    <AppXManifest Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\bin\x86\Debug\Core\AppxManifest.xml">
+    <AppXManifest Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\bin\x86\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-23T03:22:27.131</Modified>
+      <Modified>2017-06-23T21:38:03.121</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\bin\x86\Debug\OneBusAway.exe">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\bin\x86\Debug\OneBusAway.exe">
       <PackagePath>entrypoint\OneBusAway.exe</PackagePath>
-      <Modified>2017-06-23T03:22:26.795</Modified>
+      <Modified>2017-06-23T21:38:02.736</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Jonathan\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -495,65 +495,65 @@
       <PackagePath>System.Xml.XmlSerializer.dll</PackagePath>
       <Modified>2016-06-12T06:15:04.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\Assets\Square310x310Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\Assets\Square310x310Logo.scale-200.png">
       <PackagePath>Assets\Square310x310Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-21T17:59:24.621</Modified>
+      <Modified>2017-06-23T04:10:22.434</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\Assets\LockScreenLogo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
-      <Modified>2017-06-20T19:43:36.188</Modified>
+      <Modified>2017-06-23T04:10:22.414</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\Assets\SplashScreen.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\Assets\SplashScreen.scale-200.png">
       <PackagePath>Assets\SplashScreen.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-20T19:42:12.062</Modified>
+      <Modified>2017-06-23T04:10:22.422</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\Assets\Square150x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\Assets\Square150x150Logo.scale-200.png">
       <PackagePath>Assets\Square150x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-21T06:47:14.212</Modified>
+      <Modified>2017-06-23T04:10:22.425</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\Assets\Square44x44Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\Assets\Square44x44Logo.scale-200.png">
       <PackagePath>Assets\Square44x44Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-21T06:47:05.851</Modified>
+      <Modified>2017-06-23T04:10:22.439</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
       <PackagePath>Assets\Square44x44Logo.targetsize-24_altform-unplated.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-20T19:45:17.913</Modified>
+      <Modified>2017-06-23T04:10:22.441</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\Assets\StoreLogo.png">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\Assets\StoreLogo.png">
       <PackagePath>Assets\StoreLogo.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-20T19:45:29.234</Modified>
+      <Modified>2017-06-23T04:10:22.446</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\Assets\Wide310x150Logo.scale-200.png">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\Assets\Wide310x150Logo.scale-200.png">
       <PackagePath>Assets\Wide310x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-21T06:46:52.344</Modified>
+      <Modified>2017-06-23T04:10:22.451</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\Properties\Default.rd.xml">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\Properties\Default.rd.xml">
       <PackagePath>Properties\Default.rd.xml</PackagePath>
-      <Modified>2017-06-20T17:37:50.412</Modified>
+      <Modified>2017-06-23T04:10:22.602</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\bin\x86\Debug\OneBusAway.xr.xml">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\bin\x86\Debug\OneBusAway.xr.xml">
       <PackagePath>OneBusAway.xr.xml</PackagePath>
-      <Modified>2017-06-23T02:51:17.648</Modified>
+      <Modified>2017-06-23T21:04:16.243</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\10.0.15063.0\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
       <Modified>2017-06-15T19:20:18.528</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\bin\x86\Debug\resources.pri">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\bin\x86\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-23T02:52:43.945</Modified>
+      <Modified>2017-06-23T21:13:04.773</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\bin\x86\Debug\Core\OneBusAway.exe">
+    <AppxPackagedFile Include="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\bin\x86\Debug\Core\OneBusAway.exe">
       <PackagePath>OneBusAway.exe</PackagePath>
-      <Modified>2017-06-23T03:22:27.126</Modified>
+      <Modified>2017-06-23T21:38:03.113</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

@@ -22015,10 +22015,10 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Jonathan\\Documents\\Visual Studio 2017\\Projects\\OneBusAway\\OneBusAway\\OneBusAway.csproj",
+      "projectUniqueName": "C:\\Users\\Jonathan\\Documents\\GitHub\\oba-reader\\OneBusAway\\OneBusAway.csproj",
       "projectName": "OneBusAway",
-      "projectPath": "C:\\Users\\Jonathan\\Documents\\Visual Studio 2017\\Projects\\OneBusAway\\OneBusAway\\OneBusAway.csproj",
-      "outputPath": "C:\\Users\\Jonathan\\Documents\\Visual Studio 2017\\Projects\\OneBusAway\\OneBusAway\\obj\\",
+      "projectPath": "C:\\Users\\Jonathan\\Documents\\GitHub\\oba-reader\\OneBusAway\\OneBusAway.csproj",
+      "outputPath": "C:\\Users\\Jonathan\\Documents\\GitHub\\oba-reader\\OneBusAway\\obj\\",
       "projectStyle": "PackageReference",
       "originalTargetFrameworks": [
         "uap10.0.10586"

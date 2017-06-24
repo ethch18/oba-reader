@@ -6,7 +6,7 @@
     <autoResourcePackage qualifier="DXFeatureLevel" />
     <omitSchemaFromResourcePacks />
   </packaging>
-  <index root="\" startIndexAt="C:\Users\Jonathan\Documents\Visual Studio 2017\Projects\OneBusAway\OneBusAway\bin\x86\Debug\resources.pri">
+  <index root="\" startIndexAt="C:\Users\Jonathan\Documents\GitHub\oba-reader\OneBusAway\bin\x86\Debug\resources.pri">
     <default>
       <qualifier name="Language" value="en-US" />
       <qualifier name="Contrast" value="standard" />
