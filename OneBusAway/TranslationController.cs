@@ -3,22 +3,9 @@ using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
-using System.Text;
 
 namespace OneBusAway
 {
-    //public class Runner
-    //{
-    //    //public static void Run(string[] args)
-    //    //{
-    //    //    TranslationController c = new TranslationController();
-    //    //    c.Get("university"); // cache miss
-    //    //    c.Get("university"); // cache hit
-    //    //    c.Get("salisbury");
-    //    //    Console.ReadLine();
-    //    //}
-    //}
-
     public class TranslationController
     {
         private SortedDictionary<WeightedPhrase, string> memory;
@@ -28,13 +15,14 @@ namespace OneBusAway
         {
             this.memory = new SortedDictionary<WeightedPhrase, string>();
             this.tlb = new Dictionary<string, WeakReference<string>>();
+            Import(this.memory);
 
         }
 
         private static void Import(SortedDictionary<WeightedPhrase, string> destination)
         {
             string raw;
-            using (StreamReader sr = new StreamReader("data.json"))
+            using (StreamReader sr = File.OpenText("db.json"))
             {
                 raw = sr.ReadToEnd();
             }
@@ -43,7 +31,8 @@ namespace OneBusAway
                 Mapping data = JsonConvert.DeserializeObject<Mapping>(raw);
                 foreach (PropertyInfo prop in data.GetType().GetProperties())
                 {
-                    WeightedPhrase key = new WeightedPhrase(prop.Name, prop.Name.Length);
+                    string propName = prop.Name.Replace("__", " ").Replace("_", "-");
+                    WeightedPhrase key = new WeightedPhrase(propName, propName.Length);
                     string value = (string) prop.GetValue(data);
                     destination[key] = value;
                 }
@@ -52,15 +41,16 @@ namespace OneBusAway
 
         public string Get(string original)
         {
-            string result = null;
+            string result;
             if (this.tlb.ContainsKey(original) && tlb[original].TryGetTarget(out result))
             {
                 // tlb hit
                 return result;
             }
+            result = original;
             foreach (WeightedPhrase w in this.memory.Keys)
             {
-                result = original.Replace(w.value, this.memory[w]);
+                result = result.Replace(w.value, this.memory[w]);
             }
 
             if (result != original) // successful translation
@@ -76,20 +66,22 @@ namespace OneBusAway
                 }
 #endif          
                 this.tlb[original] = new WeakReference<string>(result);
+                return result;
             }
             else
             {
                 Log(original, result);
+                return original;
             }
-            return result;
         }
 
         private void Log(string original, string result)
         {
-            using (StreamWriter sr = new StreamWriter("log.out", true))
-            {
-                sr.WriteLine("{0}\t{1}", original, result);
-            }
+            // TODO: logging
+            //using (StreamWriter sr = File.OpenWrite("log.out"))
+            //{
+            //    sr.WriteLine("{0}\t{1}", original, result);
+            //}
         }
     }
 
@@ -105,7 +97,12 @@ namespace OneBusAway
         public int CompareTo(WeightedPhrase other)
         {
             // higher weights are earlier, so we go counter to int comparison
-            return other.weight.CompareTo(this.weight);
+            int result = other.weight.CompareTo(this.weight);
+            if (result != 0)
+            {
+                return result;
+            }
+            return this.value.CompareTo(other.value);
         }
     }
 }
