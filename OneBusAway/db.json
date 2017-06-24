@@ -1,4 +1,5 @@
-﻿{
+﻿/* Input conventions: replace all spaces with __ (two underscores) and all dashes with _ (one underscore) */
+{
   "university__of__washington": "華盛頓大學",
 
   "passenger__terminal": "客運大樓",
