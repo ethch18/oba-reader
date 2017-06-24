@@ -7,58 +7,31 @@ using System.Text;
 
 namespace OneBusAway
 {
-    public class Runner
-    {
-        public static void Main(string[] args)
-        {
-            TranslationController c = new TranslationController();
-            c.Get("university"); // cache miss
-            c.Get("university"); // cache hit
-            c.Get("salisbury");
-            Console.ReadLine();
-        }
-    }
+    //public class Runner
+    //{
+    //    //public static void Run(string[] args)
+    //    //{
+    //    //    TranslationController c = new TranslationController();
+    //    //    c.Get("university"); // cache miss
+    //    //    c.Get("university"); // cache hit
+    //    //    c.Get("salisbury");
+    //    //    Console.ReadLine();
+    //    //}
+    //}
 
-    class TranslationController
+    public class TranslationController
     {
-        private SortedDictionary<string, WeakReference> cache;
-        private Mapping rawData;
-        
+        private SortedDictionary<WeightedPhrase, string> memory;
+        private Dictionary<string, WeakReference<string>> tlb;
+
         public TranslationController()
         {
-            this.cache = new SortedDictionary<WeightedPhrase, WeakReference>();
-            TranslationController.Import(this.cache);
+            this.memory = new SortedDictionary<WeightedPhrase, string>();
+            this.tlb = new Dictionary<string, WeakReference<string>>();
+
         }
 
-        public string Translate(string original)
-        {
-            using (StringBuilder sb = new StringBuilder())
-            {
-                
-            }
-        }
-
-        // private string Get(string original)
-        // {
-        //     if (this.cache.ContainsKey(original))
-        //     {
-        //         // result found
-        //         return (string) this.cache[original].Target;
-        //     }
-        //     var output = this.rawData.GetType().GetProperty(original);
-        //     if (output != null) 
-        //     {
-        //         string result = (string)  output.GetValue(this.rawData);
-        //         // in data store
-        //         Console.WriteLine(result);
-        //         this.cache[original] = new WeakReference(result);
-        //         return result;
-        //     }
-        //     // no result found
-        //     return null;
-        // }
-
-        private void Import(SortedDictionary<WeightedPhrase, WeakReference> cache)
+        private static void Import(SortedDictionary<WeightedPhrase, string> destination)
         {
             string raw;
             using (StreamReader sr = new StreamReader("data.json"))
@@ -68,21 +41,62 @@ namespace OneBusAway
             if (raw != null)
             {
                 Mapping data = JsonConvert.DeserializeObject<Mapping>(raw);
-                foreach (var prop in data.GetType().GetProperties())
+                foreach (PropertyInfo prop in data.GetType().GetProperties())
                 {
                     WeightedPhrase key = new WeightedPhrase(prop.Name, prop.Name.Length);
                     string value = (string) prop.GetValue(data);
-                    cache[key] = new WeakReference(value);
+                    destination[key] = value;
                 }
             }
+        }
 
+        public string Get(string original)
+        {
+            string result = null;
+            if (this.tlb.ContainsKey(original) && tlb[original].TryGetTarget(out result))
+            {
+                // tlb hit
+                return result;
+            }
+            foreach (WeightedPhrase w in this.memory.Keys)
+            {
+                result = original.Replace(w.value, this.memory[w]);
+            }
+
+            if (result != original) // successful translation
+            {
+#if debug
+                foreach (char c in result)
+                {
+                    if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122))
+                    {
+                        Log(original, result);
+                        break;
+                    }
+                }
+#endif          
+                this.tlb[original] = new WeakReference<string>(result);
+            }
+            else
+            {
+                Log(original, result);
+            }
+            return result;
+        }
+
+        private void Log(string original, string result)
+        {
+            using (StreamWriter sr = new StreamWriter("log.out", true))
+            {
+                sr.WriteLine("{0}\t{1}", original, result);
+            }
         }
     }
 
     class WeightedPhrase : IComparable<WeightedPhrase>
     {
-        public int weight {get; set;};
-        public string value {get; set;};
+        public int weight { get; set; }
+        public string value { get; set; }
         public WeightedPhrase(string val, int weight)
         {
             this.weight = weight;
@@ -90,12 +104,8 @@ namespace OneBusAway
         }
         public int CompareTo(WeightedPhrase other)
         {
-            return Int32.Compare(this.weight, other.weight);
+            // higher weights are earlier, so we go counter to int comparison
+            return other.weight.CompareTo(this.weight);
         }
-    }
-    
-    class Mapping
-    {
-        public string university {get; set;}
     }
 }
