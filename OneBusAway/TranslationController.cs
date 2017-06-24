@@ -39,7 +39,7 @@ namespace OneBusAway
             }
         }
 
-        public string Get(string original)
+        public string Gettext(string original)
         {
             string result;
             if (this.tlb.ContainsKey(original) && tlb[original].TryGetTarget(out result))
