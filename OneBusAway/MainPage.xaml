@@ -15,15 +15,15 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="textBox" KeyDown="textBox_KeyDown" ToolTipService.ToolTip="Add a stop"/>
-                <Button x:Name="buttonAdd" Click="button_Click_Add" Width="40" Height="40" ToolTipService.ToolTip="Add" Grid.Column="1"/>
-                <Button x:Name="buttonAddRandom" Click="button_Click_AddRandom" Width="40" Height="40" ToolTipService.ToolTip="Add random stop" Grid.Column="2"/>
+                <TextBox x:Name="textBox" KeyDown="EVENTtextBoxKeyDown" ToolTipService.ToolTip="Add a stop"/>
+                <Button x:Name="buttonAdd" Click="EVENTbuttonAdd" Width="40" Height="40" ToolTipService.ToolTip="Add" Grid.Column="1"/>
+                <Button x:Name="buttonAddRandom" Click="EVENTbuttonAddRandom" Width="40" Height="40" ToolTipService.ToolTip="Add random stop" Grid.Column="2"/>
                 <Button x:Name="buttonAddPreset" Width="40" Height="40" ToolTipService.ToolTip="Use preset stops" Grid.Column="3" Flyout="{StaticResource FlyoutBase2}"/>
 
                 <StackPanel Grid.Row="1" Grid.ColumnSpan="4">
                     <ProgressBar x:Name="progressBar" IsIndeterminate="True" Visibility="Collapsed"/>
                     <RichTextBlock x:Name="richTextBox" Grid.Row="1" TextWrapping="NoWrap" Margin="5"/>
-                    <Button x:Name="buttonClear" Content="Clear all stops" Click="button_Click_Clear" Grid.Row="2"/>
+                    <Button x:Name="buttonClear" Content="Clear all stops" Click="EVENTbuttonClear" Grid.Row="2"/>
 
                     <TextBlock Text=""/>
 
@@ -33,19 +33,26 @@
                     <RadioButton x:Name="radioL3" Content="ALL CAPS" GroupName="caps"/>
 
                     <TextBlock Text=""/>
-                    
-                    <TextBlock Text="Maximum arrivals to show"/>
-                    <Slider x:Name="slider" Minimum="1" ValueChanged="slider_ValueChanged" Value="8" />
 
-                    <TextBlock Text=""/>
-                    
-                    <TextBlock Text="Language"/>
-                    <CheckBox x:Name="checkEnglish" Content="English" Checked="languageChanged" Unchecked="languageChanged"/>
-                    <CheckBox x:Name="checkChinese" Content="繁體中文 (beta)" Checked="languageChanged" Unchecked="languageChanged"/>
-
-                    <TextBlock Text=""/>
-                    
                     <ToggleSwitch x:Name="toggleSeconds" Header="Show seconds" IsOn="True"/>
+                    <ToggleSwitch x:Name="toggleOneArrival" Header="Show one arrival per route"/>
+
+                    <TextBlock Text=""/>
+
+                    <TextBlock Text="Maximum arrivals to show"/>
+                    <Slider x:Name="sliderMaxArrivals" Minimum="1" ValueChanged="EVENTsliderMaxArrivalsChanged" Value="8" />
+
+                    <TextBlock Text=""/>
+
+                    <TextBlock Text="Font size"/>
+                    <CheckBox x:Name="checkAutoFontSize" Content="Auto" Checked="EVENTcheckBoxFontSizeChanged" Unchecked="EVENTcheckBoxFontSizeChanged"/>
+                    <Slider x:Name="sliderFontSize" Minimum="1" ValueChanged="EVENTsliderFontSizeValueChanged" Value="48" Maximum="96" IsEnabled="False" />
+
+                    <TextBlock Text=""/>
+
+                    <TextBlock Text="Language"/>
+                    <CheckBox x:Name="checkEnglish" Content="English" Checked="EVENTcheckBoxLanguageChanged" Unchecked="EVENTcheckBoxLanguageChanged"/>
+                    <CheckBox x:Name="checkChinese" Content="繁體中文 (beta)" Checked="EVENTcheckBoxLanguageChanged" Unchecked="EVENTcheckBoxLanguageChanged"/>
 
                     <TextBlock x:Name="errorText" FontSize="12"/>
                 </StackPanel>
@@ -54,10 +61,10 @@
         <Flyout x:Key="FlyoutBase2">
             <StackPanel >
                 <TextBlock Text="Presets"/>
-                <Button x:Name="buttonPreset1" Click="button_Click_AddPreset1" Content="Aurora Village Transit Center" Background="#00000000" Width="300" HorizontalContentAlignment="Left"/>
-                <Button x:Name="buttonPreset2" Click="button_Click_AddPreset2" Content="Seattle Pacific University" Background="#00000000" Width="300" HorizontalContentAlignment="Left"/>
-                <Button x:Name="buttonPreset3" Click="button_Click_AddPreset3" Content="University of Washington" Background="#00000000" Width="300" HorizontalContentAlignment="Left"/>
-                <Button x:Name="buttonPreset4" Click="button_Click_AddPreset4" Content="Westlake" Background="#00000000" Width="300" HorizontalContentAlignment="Left"/>
+                <Button x:Name="buttonPreset1" Click="EVENTbuttonAddPreset1" Content="Aurora Village Transit Center" Background="#00000000" Width="300" HorizontalContentAlignment="Left"/>
+                <Button x:Name="buttonPreset2" Click="EVENTbuttonAddPreset2" Content="Seattle Pacific University" Background="#00000000" Width="300" HorizontalContentAlignment="Left"/>
+                <Button x:Name="buttonPreset3" Click="EVENTbuttonAddPreset3" Content="University of Washington" Background="#00000000" Width="300" HorizontalContentAlignment="Left"/>
+                <Button x:Name="buttonPreset4" Click="EVENTbuttonAddPreset4" Content="Westlake" Background="#00000000" Width="300" HorizontalContentAlignment="Left"/>
             </StackPanel>
         </Flyout>
     </Page.Resources>
@@ -73,7 +80,7 @@
         </Grid.ColumnDefinitions>
 
         <CommandBar Background="#00000000" Grid.ColumnSpan="3" HorizontalAlignment="Right">
-            <AppBarButton Click="button_Click_Refresh" Icon="Refresh" Label="Refresh"/>
+            <AppBarButton Click="EVENTbuttonRefresh" Icon="Refresh" Label="Refresh"/>
             <AppBarButton Icon="Setting" Label="Settings" Flyout="{StaticResource FlyoutBase1}"/>
         </CommandBar>
     </Grid>

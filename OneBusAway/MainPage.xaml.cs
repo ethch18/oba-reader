@@ -24,6 +24,7 @@ namespace OneBusAway
             buttonAddPreset.Content = new SymbolIcon(Symbol.List);
             radioL1.IsChecked = true;
             checkEnglish.IsChecked = true;
+            checkAutoFontSize.IsChecked = true;
             for (int i = 0; i < 100; i++)
             {
                 RowDefinition row = new RowDefinition();
@@ -58,15 +59,15 @@ namespace OneBusAway
                 Grid.SetColumn(TEXT_ARRIVAL[i], 2);
             }
             gridMain.RowDefinitions.Add(new RowDefinition());
-            timer1.Tick += TimerEvent1;
+            timer1.Tick += EVENTrefreshText;
             timer1.Interval = new TimeSpan(0, 0, 0, 0, 100);
             timer1.Start();
-            timer10.Tick += TimerEvent10;
+            timer10.Tick += EVENTrefreshData;
             timer10.Interval = new TimeSpan(0, 0, 0, SERVER_REFRESH);
             timer10.Start();
-            timerToggle.Tick += TimerEventToggle;
+            timerToggle.Tick += EVENTtimerToggleLanguage;
             timerToggle.Interval = new TimeSpan(0, 0, 0, 5);
-            addStation("1_558");
+            addStation("1_558", true);
         }
 
         private List<string> STATIONS = new List<string>();     // stations user selected
@@ -74,6 +75,7 @@ namespace OneBusAway
         private string[] ROUTE_NUMBER = new string[100];
         private string[] DESTINATION = new string[100];
         private string[] VEHICLE_ID = new string[100];
+        private long[] DELAY = new long[100];
         private long[] ARRIVAL = new long[100];
         private int MAX_STATIONS;
         private const int SERVER_REFRESH = 10; // interval to ping the server
@@ -89,92 +91,135 @@ namespace OneBusAway
         private bool CHINESE = false;
         private Random RANDOM = new Random(); // an instance of an rng
 
-        // Refreshes all text blocks.
-        private void TimerEvent1(object sender, object e)
+        /** Refreshes all text blocks. */
+        private void EVENTrefreshText(object sender, object e)
         {
-            for (int i = 0; i < MAX_STATIONS; i++)
+            int i = 0, j = 0;
+            List<string> registeredRoutes = new List<string>();
+            while (i < MAX_STATIONS && j < 100)
             {
-                TEXT_ROUTE_NUMBER[i].Text = textCheck(ROUTE_NUMBER[i]);
-                TEXT_DESTINATION[i].Text = textCheck(DESTINATION[i]);
-                TEXT_SMALL_TEXT[i].Text = textCheck(ARRIVAL[i], VEHICLE_ID[i]);
-                TEXT_ARRIVAL[i].Text = textCheck(ARRIVAL[i]);
-            }
-        }
-
-        private async void TimerEvent10(object sender, object e)
-        {
-            timer10.Stop();
-            List<string> predicted = new List<string>();
-            List<string> scheduled = new List<string>();
-            List<string> routeNumber1 = new List<string>();
-            List<string> routeNumber2 = new List<string>();
-            List<string> destination = new List<string>();
-            List<string> vehicleId = new List<string>();
-            for (int i = 0; i < STATIONS.Count; i++)
-            {
-                string url = "http://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/"
-                + STATIONS[i] +
-                ".xml?key=09ce661b-1d78-4fc4-a77b-7c55455acadb&minutesBefore=1&minutesAfter=120&&includeReferences=false";
-                string webText = await websiteReader(url, true);
-                List<string> arrivalChunk = XMLReader(webText, "arrivalAndDeparture", MAX_STATIONS);
-                for (int j = 0; j < arrivalChunk.Count; j++)
+                bool add = true;
+                string route = "";
+                if (toggleOneArrival.IsOn)
                 {
-                    predicted.Add(XMLReader(arrivalChunk[j], "predictedDepartureTime", 1)[0]);
-                    scheduled.Add(XMLReader(arrivalChunk[j], "scheduledDepartureTime", 1)[0]);
-                    routeNumber1.Add(XMLReader(arrivalChunk[j], "routeShortName", 1)[0]);
-                    routeNumber2.Add(XMLReader(arrivalChunk[j], "routeLongName", 1)[0]);
-                    destination.Add(XMLReader(arrivalChunk[j], "tripHeadsign", 1)[0]);
-                    vehicleId.Add(XMLReader(arrivalChunk[j], "vehicleId", 1)[0]);
+                    route = ROUTE_NUMBER[j] + DESTINATION[j];
+                    for (int k = 0; k < registeredRoutes.Count; k++)
+                    {
+                        if (registeredRoutes[k] == route)
+                        {
+                            add = false;
+                            j++;
+                        }
+                    }
                 }
+                if (add)
+                {
+                    TEXT_ROUTE_NUMBER[i].Text = textCheck(ROUTE_NUMBER[j]);
+                    TEXT_DESTINATION[i].Text = textCheck(DESTINATION[j]);
+                    TEXT_SMALL_TEXT[i].Text = textCheck(ARRIVAL[j], VEHICLE_ID[j], DELAY[j]);
+                    TEXT_ARRIVAL[i].Text = textCheck(ARRIVAL[j]);
+                    i++;
+                    registeredRoutes.Add(route);
+                }
+                if (!toggleOneArrival.IsOn)
+                    j++;
             }
-            List<long> arrival = new List<long>();
-            for (int i = 0; i < predicted.Count; i++)
+            while (i < MAX_STATIONS)
             {
-                long a = getLongFromString(predicted[i]);
-                if (a == 0)
-                    a = getLongFromString(scheduled[i]);
-                arrival.Add(a);
+                TEXT_ROUTE_NUMBER[i].Text = "";
+                TEXT_DESTINATION[i].Text = "";
+                TEXT_SMALL_TEXT[i].Text = "";
+                TEXT_ARRIVAL[i].Text = "";
+                i++;
             }
-            List<int> order = createSortOrder(arrival);
-            List<string> routeNumber = new List<string>();
-            for (int i = 0; i < routeNumber1.Count; i++)
+            if ((bool)checkAutoFontSize.IsChecked)
             {
-                string s = routeNumber1[i];
-                if (s == "")
-                    s = routeNumber2[i];
-                s = s.Replace("0E", "0X");
-                s = s.Replace("1E", "1X");
-                s = s.Replace("2E", "2X");
-                s = s.Replace("3E", "3X");
-                s = s.Replace("4E", "4X");
-                s = s.Replace("5E", "5X");
-                s = s.Replace("6E", "6X");
-                s = s.Replace("7E", "7X");
-                s = s.Replace("8E", "8X");
-                s = s.Replace("9E", "9X");
-                routeNumber.Add(s);
+                double height = ((Frame)Window.Current.Content).ActualHeight - 48;
+                changeFontSize(0.7 * height / (MAX_STATIONS > 4 ? MAX_STATIONS : 4));
             }
-            ARRIVAL = sortUsingGivenOrder(arrival, order);
-            ROUTE_NUMBER = sortUsingGivenOrder(routeNumber, order);
-            DESTINATION = sortUsingGivenOrder(destination, order);
-            VEHICLE_ID = sortUsingGivenOrder(vehicleId, order);
-            timer10.Start();
         }
 
-        private void button_Click_Add(object sender, RoutedEventArgs e)
+        /** Refreshes all data with the OneBusAway server. */
+        private async void EVENTrefreshData(object sender, object e)
+        {
+            if (timer10.IsEnabled)
+            {
+                timer10.Stop();
+                List<string> predicted = new List<string>();
+                List<string> scheduled = new List<string>();
+                List<string> routeNumber1 = new List<string>();
+                List<string> routeNumber2 = new List<string>();
+                List<string> destination = new List<string>();
+                List<string> vehicleId = new List<string>();
+                for (int i = 0; i < STATIONS.Count; i++)
+                {
+                    string url = "http://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/"
+                    + STATIONS[i] +
+                    ".xml?key=09ce661b-1d78-4fc4-a77b-7c55455acadb&minutesBefore=1&minutesAfter=120&&includeReferences=false";
+                    string webText = await websiteReader(url, true);
+                    List<string> arrivalChunk = XMLReader(webText, "arrivalAndDeparture", MAX_STATIONS);
+                    for (int j = 0; j < arrivalChunk.Count; j++)
+                    {
+                        predicted.Add(XMLReader(arrivalChunk[j], "predictedDepartureTime", 1)[0]);
+                        scheduled.Add(XMLReader(arrivalChunk[j], "scheduledDepartureTime", 1)[0]);
+                        routeNumber1.Add(XMLReader(arrivalChunk[j], "routeShortName", 1)[0]);
+                        routeNumber2.Add(XMLReader(arrivalChunk[j], "routeLongName", 1)[0]);
+                        destination.Add(XMLReader(arrivalChunk[j], "tripHeadsign", 1)[0]);
+                        vehicleId.Add(XMLReader(arrivalChunk[j], "vehicleId", 1)[0]);
+                    }
+                }
+                List<long> arrival = new List<long>();
+                List<long> delay = new List<long>();
+                for (int i = 0; i < predicted.Count; i++)
+                {
+                    long a = getLongFromString(predicted[i]);
+                    if (a == 0)
+                        a = getLongFromString(scheduled[i]);
+                    delay.Add(getLongFromString(scheduled[i]) - getLongFromString(predicted[i]));
+                    arrival.Add(a);
+                }
+                List<int> order = createSortOrder(arrival);
+                List<string> routeNumber = new List<string>();
+                for (int i = 0; i < routeNumber1.Count; i++)
+                {
+                    string s = routeNumber1[i];
+                    if (s == "")
+                        s = routeNumber2[i];
+                    s = s.Replace("0E", "0X");
+                    s = s.Replace("1E", "1X");
+                    s = s.Replace("2E", "2X");
+                    s = s.Replace("3E", "3X");
+                    s = s.Replace("4E", "4X");
+                    s = s.Replace("5E", "5X");
+                    s = s.Replace("6E", "6X");
+                    s = s.Replace("7E", "7X");
+                    s = s.Replace("8E", "8X");
+                    s = s.Replace("9E", "9X");
+                    routeNumber.Add(s);
+                }
+                ARRIVAL = sortUsingGivenOrder(arrival, order);
+                ROUTE_NUMBER = sortUsingGivenOrder(routeNumber, order);
+                DESTINATION = sortUsingGivenOrder(destination, order);
+                VEHICLE_ID = sortUsingGivenOrder(vehicleId, order);
+                DELAY = sortUsingGivenOrder(delay, order);
+                timer10.Start();
+            }
+        }
+
+        private void EVENTbuttonAdd(object sender, RoutedEventArgs e)
         {
             addStation(textBox.Text);
             textBox.Text = "";
         }
 
-        private void button_Click_Clear(object sender, RoutedEventArgs e)
+        private void EVENTbuttonClear(object sender, RoutedEventArgs e)
         {
             STATIONS.Clear();
             richTextBox.Blocks.Clear();
-            TimerEvent10(null, null);
+            EVENTrefreshData(null, null);
         }
 
-        private async void button_Click_AddRandom(object sender, RoutedEventArgs e)
+        private async void EVENTbuttonAddRandom(object sender, RoutedEventArgs e)
         {
             enableControls(false);
             // agencies:
@@ -206,59 +251,59 @@ namespace OneBusAway
             addStation(ALL_STATIONS[a]);
         }
 
-        private void button_Click_AddPreset1(object sender, RoutedEventArgs e)
+        private void EVENTbuttonAddPreset1(object sender, RoutedEventArgs e)
         {
-            addStation("1_16101", false, true);
-            addStation("1_16102", false, true);
-            addStation("1_16103", false, true);
-            addStation("1_16104", false, true);
-            addStation("29_2875", false, true);
-            addStation("1_16106", false, true);
-            addStation("29_2876", false, true);
-            addStation("1_16100", false, true);
-            addStation("1_16112", true, true);
+            addStation("1_16101", true);
+            addStation("1_16102", true);
+            addStation("1_16103", true);
+            addStation("1_16104", true);
+            addStation("29_2875", true);
+            addStation("1_16106", true);
+            addStation("29_2876", true);
+            addStation("1_16100", true);
+            addStation("1_16112", true);
         }
 
-        private void button_Click_AddPreset2(object sender, RoutedEventArgs e)
+        private void EVENTbuttonAddPreset2(object sender, RoutedEventArgs e)
         {
-            addStation("1_41255", false, true);
-            addStation("1_18210", false, true);
-            addStation("1_18630", true, true);
+            addStation("1_41255", true);
+            addStation("1_18210", true);
+            addStation("1_18630", true);
         }
 
-        private void button_Click_AddPreset3(object sender, RoutedEventArgs e)
+        private void EVENTbuttonAddPreset3(object sender, RoutedEventArgs e)
         {
-            addStation("1_29247", false, true);
-            addStation("1_29405", false, true);
-            addStation("1_25765", false, true);
-            addStation("1_99604", false, true);
-            addStation("3_19473", true, true);
+            addStation("1_29247", true);
+            addStation("1_29405", true);
+            addStation("1_25765", true);
+            addStation("1_99604", true);
+            addStation("3_19473", true);
         }
 
-        private void button_Click_AddPreset4(object sender, RoutedEventArgs e)
+        private void EVENTbuttonAddPreset4(object sender, RoutedEventArgs e)
         {
-            addStation("1_1120", false, true);
-            addStation("1_1121", false, true);
-            addStation("1_700", false, true);
-            addStation("1_570", false, true);
-            addStation("1_430", false, true);
-            addStation("1_431", false, true);
-            addStation("1_433", false, true);
-            addStation("1_1108", false, true);
-            addStation("1_1109", false, true);
-            addStation("1_1110", false, true);
-            addStation("1_760", false, true);
-            addStation("1_280", false, true);
-            addStation("1_575", false, true);
-            addStation("1_578", true, true);
+            addStation("1_1120", true);
+            addStation("1_1121", true);
+            addStation("1_700", true);
+            addStation("1_570", true);
+            addStation("1_430", true);
+            addStation("1_431", true);
+            addStation("1_433", true);
+            addStation("1_1108", true);
+            addStation("1_1109", true);
+            addStation("1_1110", true);
+            addStation("1_760", true);
+            addStation("1_280", true);
+            addStation("1_575", true);
+            addStation("1_578", true);
         }
 
-        private void button_Click_Refresh(object sender, RoutedEventArgs e)
+        private void EVENTbuttonRefresh(object sender, RoutedEventArgs e)
         {
-            TimerEvent10(null, null);
+            EVENTrefreshData(null, null);
         }
 
-        private void TimerEventToggle(object sender, object e)
+        private void EVENTtimerToggleLanguage(object sender, object e)
         {
             CHINESE = !CHINESE;
         }
@@ -379,26 +424,12 @@ namespace OneBusAway
         {
             if (arrival == 0)
                 return "";
-            string s;
             double timeDiff = arrival - (DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
-            double time = Math.Abs(timeDiff) / 60000D;
-            if (timeDiff < 0)
-                s = CHINESE ? "已離開" : "Gone";
-            else if (Math.Round(time) <= 1)
-                s = CHINESE ? "即將到達" : "Arriving ";
-            else if (toggleSeconds.IsOn)
-            {
-                double min = Math.Floor(time);
-                double sec = Math.Floor((time - min) * 60);
-                s = min.ToString() + (sec < 10 ? ":0" : ":") + sec.ToString();
-            }
-            else
-                s = Math.Round(time).ToString() + (CHINESE ? "分" : "min");
-            return textCheck(s);
+            return textCheck(timeDiffToString(timeDiff, 1));
         }
 
         /** Overload for arrival clock time */
-        private string textCheck(long arrival, string othertext)
+        private string textCheck(long arrival, string vehicleId, double delay)
         {
             if (arrival == 0)
                 return "";
@@ -410,10 +441,43 @@ namespace OneBusAway
                 bool am = timeString.Substring(timeString.IndexOf(" ")) == " AM";
                 timeString = (am ? "上午 " : "下午 ") + timeString.Remove(timeString.IndexOf(" "));
             }
-            return textCheck(" " + timeString + "     " + othertext);
+            return textCheck(" " + timeString + "     " + timeDiffToString(delay, 2) + "     " + vehicleId);
         }
 
-        private async void addStation(string station, bool refresh = true, bool forceSuccess = false)
+        private string timeDiffToString(double timeDiff, int options = 0)
+        {
+            double time = Math.Abs(timeDiff) / 60000D;
+            if (options == 1)
+            {
+                if (timeDiff < 0)
+                    return CHINESE ? "已離開" : "Gone";
+                else if (Math.Round(time) <= 1)
+                    return CHINESE ? "即將到達" : "Arriving ";
+            }
+            string s;
+            if (toggleSeconds.IsOn)
+            {
+                double min = Math.Floor(time);
+                double sec = Math.Floor((time - min) * 60);
+                s = min.ToString() + (sec < 10 ? ":0" : ":") + sec.ToString();
+            }
+            else
+                s = Math.Round(time).ToString() + (CHINESE ? "分" : "min");
+            if (options == 2)
+            {
+                if (timeDiff > 100000000)
+                    return "";
+                if (Math.Round(time) <= 1)
+                    return CHINESE ? "準時到達" : "On time";
+                if (CHINESE)
+                    s = (timeDiff < 0 ? "延遲" : "提早") + s;
+                else
+                    s = s + (timeDiff < 0 ? " delay" : " early");
+            }
+            return s;
+        }
+
+        private async void addStation(string station, bool forceSuccess = false)
         {
             enableControls(false);
             if (!station.Contains("_"))
@@ -432,8 +496,7 @@ namespace OneBusAway
                 paragraph.Inlines.Add(run);
                 richTextBox.Blocks.Add(paragraph);
                 STATIONS.Add(station);
-                if (refresh)
-                    TimerEvent10(null, null);
+                EVENTrefreshData(null, null);
             }
             else
             {
@@ -458,13 +521,13 @@ namespace OneBusAway
             enableControls(true);
         }
 
-        private void textBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        private void EVENTtextBoxKeyDown(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key == VirtualKey.Enter && textBox.Text != "")
-                button_Click_Add(null, null);
+                EVENTbuttonAdd(null, null);
         }
 
-        private void languageChanged(object sender, RoutedEventArgs e)
+        private void EVENTcheckBoxLanguageChanged(object sender, RoutedEventArgs e)
         {
             if ((bool)checkChinese.IsChecked && (bool)checkEnglish.IsChecked)
             {
@@ -484,36 +547,28 @@ namespace OneBusAway
             }
         }
 
-        private void Flyout_Opened(object sender, object e)
+        private void EVENTcheckBoxFontSizeChanged(object sender, RoutedEventArgs e)
+        {
+            bool auto = (bool)checkAutoFontSize.IsChecked;
+            sliderFontSize.IsEnabled = !auto;
+            if (!auto)
+                changeFontSize(sliderFontSize.Value);
+        }
+
+        private void EVENTflyoutOpened(object sender, object e)
         {
             textBox.Focus(FocusState.Keyboard);
         }
 
-        private void slider_ValueChanged(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        private void EVENTsliderMaxArrivalsChanged(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
-            MAX_STATIONS = (int)slider.Value;
-            for (int i = 0; i < 100; i++)
-            {
-                try
-                {
-                    if (i < MAX_STATIONS)
-                    {
-                        int scale = MAX_STATIONS < 5 ? 4 : MAX_STATIONS;
-                        TEXT_ROUTE_NUMBER[i].FontSize = 384D / scale;
-                        TEXT_DESTINATION[i].FontSize = 288D / scale;
-                        TEXT_SMALL_TEXT[i].FontSize = 96D / scale;
-                        TEXT_ARRIVAL[i].FontSize = 384D / scale;
-                    }
-                    else
-                    {
-                        TEXT_ROUTE_NUMBER[i].Text = "";
-                        TEXT_DESTINATION[i].Text = "";
-                        TEXT_SMALL_TEXT[i].Text = "";
-                        TEXT_ARRIVAL[i].Text = "";
-                    }
-                }
-                catch { }
-            }
+            MAX_STATIONS = (int)sliderMaxArrivals.Value;
+            EVENTrefreshData(null, null);
+        }
+
+        private void EVENTsliderFontSizeValueChanged(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            changeFontSize(sliderFontSize.Value);
         }
 
         private void enableControls(bool enable)
@@ -527,15 +582,40 @@ namespace OneBusAway
             buttonPreset3.IsEnabled = enable;
             buttonPreset4.IsEnabled = enable;
             textBox.IsEnabled = enable;
-            slider.IsEnabled = enable;
+            sliderMaxArrivals.IsEnabled = enable;
             progressBar.Visibility = enable ? Visibility.Collapsed : Visibility.Visible;
             textBox.Focus(FocusState.Keyboard);
+        }
+
+        private void changeFontSize(double size)
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                try
+                {
+                    if (i < MAX_STATIONS)
+                    {
+                        TEXT_ROUTE_NUMBER[i].FontSize = size;
+                        TEXT_DESTINATION[i].FontSize = 0.75 * size;
+                        TEXT_SMALL_TEXT[i].FontSize = 0.25 * size;
+                        TEXT_ARRIVAL[i].FontSize = size;
+                    }
+                    else
+                    {
+                        TEXT_ROUTE_NUMBER[i].Text = "";
+                        TEXT_DESTINATION[i].Text = "";
+                        TEXT_SMALL_TEXT[i].Text = "";
+                        TEXT_ARRIVAL[i].Text = "";
+                    }
+                }
+                catch { }
+            }
         }
 
         private string translate(string s)
         {
             s = this.controller.Gettext(s.ToLower());
-            
+
             // 1
             if (!s.Contains("e 綫") && !s.Contains("e1"))
             {
