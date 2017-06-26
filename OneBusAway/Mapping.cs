@@ -50,6 +50,8 @@ namespace OneBusAway
         public string chinatown { get; set; }
         public string dwntn__tac { get; set; }
         public string education { get; set; }
+        public string jefferson { get; set; }
+        public string kennydale { get; set; }
         public string roosevelt { get; set; }
         public string sheridian { get; set; }
         public string shoreline { get; set; }
@@ -70,6 +72,7 @@ namespace OneBusAway
         public string houghton { get; set; }
         public string issaquah { get; set; }
         public string junction { get; set; }
+        public string kathleen { get; set; }
         public string kingston { get; set; }
         public string kirkland { get; set; }
         public string lynnwood { get; set; }
@@ -124,6 +127,7 @@ namespace OneBusAway
         public string seattle { get; set; }
         public string shuttle { get; set; }
         public string sounder { get; set; }
+        public string special { get; set; }
         public string station { get; set; }
         public string stevens { get; set; }
         public string terrace { get; set; }
@@ -139,6 +143,7 @@ namespace OneBusAway
         public string beacon { get; set; }
         public string benson { get; set; }
         public string boeing { get; set; }
+        public string bridge { get; set; }
         public string burien { get; set; }
         public string canyon { get; set; }
         public string casino { get; set; }
