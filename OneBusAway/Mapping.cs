@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace OneBusAway
 {
-
-
     public class Mapping
     {
         public string university__of__washington { get; set; }
@@ -22,6 +20,7 @@ namespace OneBusAway
         public string transit__center { get; set; }
         public string downtown__only { get; set; }
         public string international { get; set; }
+        public string park__and__ride { get; set; }
         public string port__townsend { get; set; }
         public string all__stations { get; set; }
         public string capitol__hill { get; set; }
@@ -38,6 +37,7 @@ namespace OneBusAway
         public string queen__anne { get; set; }
         public string snoqualmie { get; set; }
         public string southbound { get; set; }
+        public string steilacoom { get; set; }
         public string university { get; set; }
         public string alderwood { get; set; }
         public string anacortes { get; set; }
@@ -56,6 +56,7 @@ namespace OneBusAway
         public string sheridian { get; set; }
         public string shoreline { get; set; }
         public string tahlequah { get; set; }
+        public string airfield { get; set; }
         public string bellevue { get; set; }
         public string broadway { get; set; }
         public string cascadia { get; set; }
@@ -80,11 +81,13 @@ namespace OneBusAway
         public string magnuson { get; set; }
         public string mckinley { get; set; }
         public string meridian { get; set; }
+        public string military { get; set; }
         public string mt__baker { get; set; }
         public string mukilteo { get; set; }
         public string outbound { get; set; }
         public string prentice { get; set; }
         public string puyallup { get; set; }
+        public string richmond { get; set; }
         public string stanwood { get; set; }
         public string admiral { get; set; }
         public string airport { get; set; }
@@ -122,6 +125,7 @@ namespace OneBusAway
         public string pacific { get; set; }
         public string pioneer { get; set; }
         public string proctor { get; set; }
+        public string redondo { get; set; }
         public string sea__tac { get; set; }
         public string sea_tac { get; set; }
         public string seattle { get; set; }
@@ -132,6 +136,7 @@ namespace OneBusAway
         public string stevens { get; set; }
         public string terrace { get; set; }
         public string theater { get; set; }
+        public string transit { get; set; }
         public string tukwila { get; set; }
         public string tulalip { get; set; }
         public string up_town { get; set; }
@@ -145,12 +150,14 @@ namespace OneBusAway
         public string boeing { get; set; }
         public string bridge { get; set; }
         public string burien { get; set; }
+        public string burton { get; set; }
         public string canyon { get; set; }
         public string casino { get; set; }
         public string center { get; set; }
         public string cherry { get; set; }
         public string church { get; set; }
         public string colman { get; set; }
+        public string duvall { get; set; }
         public string fedway { get; set; }
         public string friday { get; set; }
         public string george { get; set; }
@@ -172,6 +179,7 @@ namespace OneBusAway
         public string street { get; set; }
         public string summit { get; set; }
         public string tacoma { get; set; }
+        public string timber { get; set; }
         public string uptown { get; set; }
         public string valley { get; set; }
         public string vashon { get; set; }
@@ -217,12 +225,15 @@ namespace OneBusAway
         public string ville { get; set; }
         public string white { get; set; }
         public string worth { get; set; }
+        public string army { get; set; }
         public string bain { get; set; }
+        public string bear { get; set; }
         public string bend { get; set; }
         public string blue { get; set; }
         public string city { get; set; }
         public string coll { get; set; }
         public string dash { get; set; }
+        public string dock { get; set; }
         public string dome { get; set; }
         public string down { get; set; }
         public string dtwn { get; set; }
@@ -243,6 +254,7 @@ namespace OneBusAway
         public string leaf { get; set; }
         public string line { get; set; }
         public string link { get; set; }
+        public string loop { get; set; }
         public string main { get; set; }
         public string mall { get; set; }
         public string mont { get; set; }
@@ -256,6 +268,7 @@ namespace OneBusAway
         public string town { get; set; }
         public string road { get; set; }
         public string sand { get; set; }
+        public string star { get; set; }
         public string stcr { get; set; }
         public string twin { get; set; }
         public string vasa { get; set; }
@@ -277,10 +290,11 @@ namespace OneBusAway
         public string stn { get; set; }
         public string tac { get; set; }
         public string tcc { get; set; }
+        public string ton { get; set; }
         public string via { get; set; }
         public string way { get; set; }
         public string cc { get; set; }
-        public string hh { get; set; }
+        public string hs { get; set; }
         public string ne { get; set; }
         public string nw { get; set; }
         public string rd { get; set; }
@@ -295,6 +309,4 @@ namespace OneBusAway
         public string uw { get; set; }
         public string va { get; set; }
     }
-
-
 }
