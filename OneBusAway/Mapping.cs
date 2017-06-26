@@ -182,7 +182,6 @@ namespace OneBusAway
         public string arbor { get; set; }
         public string beach { get; set; }
         public string black { get; set; }
-        public string bridge { get; set; }
         public string clyde { get; set; }
         public string coupe { get; set; }
         public string creek { get; set; }
@@ -281,6 +280,7 @@ namespace OneBusAway
         public string via { get; set; }
         public string way { get; set; }
         public string cc { get; set; }
+        public string hh { get; set; }
         public string ne { get; set; }
         public string nw { get; set; }
         public string rd { get; set; }
