@@ -27,7 +27,7 @@ namespace OneBusAway
         public string high__school { get; set; }
         public string laurelhurst { get; set; }
         public string mount__baker { get; set; }
-        public string park____ride { get; set; }
+        public string park_______ride { get; set; }
         public string the__landing { get; set; }
         public string wallingford { get; set; }
         public string circulator { get; set; }
@@ -57,6 +57,7 @@ namespace OneBusAway
         public string shoreline { get; set; }
         public string tahlequah { get; set; }
         public string airfield { get; set; }
+        public string avondale { get; set; }
         public string bellevue { get; set; }
         public string broadway { get; set; }
         public string cascadia { get; set; }
@@ -132,6 +133,7 @@ namespace OneBusAway
         public string shuttle { get; set; }
         public string sounder { get; set; }
         public string special { get; set; }
+        public string stadium { get; set; }
         public string station { get; set; }
         public string stevens { get; set; }
         public string terrace { get; set; }
@@ -157,6 +159,7 @@ namespace OneBusAway
         public string cherry { get; set; }
         public string church { get; set; }
         public string colman { get; set; }
+        public string dupont { get; set; }
         public string duvall { get; set; }
         public string fedway { get; set; }
         public string friday { get; set; }
@@ -266,6 +269,7 @@ namespace OneBusAway
         public string shaw { get; set; }
         public string tech { get; set; }
         public string town { get; set; }
+        public string tram { get; set; }
         public string road { get; set; }
         public string sand { get; set; }
         public string star { get; set; }
@@ -281,8 +285,9 @@ namespace OneBusAway
         public string ave { get; set; }
         public string bar { get; set; }
         public string fhs { get; set; }
+        public string fir { get; set; }
         public string gig { get; set; }
-        public string pr { get; set; }
+        public string p___r { get; set; }
         public string pac { get; set; }
         public string sch { get; set; }
         public string slu { get; set; }

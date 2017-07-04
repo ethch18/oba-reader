@@ -31,9 +31,9 @@ namespace OneBusAway
                 Mapping data = JsonConvert.DeserializeObject<Mapping>(raw);
                 foreach (PropertyInfo prop in data.GetType().GetProperties())
                 {
-                    string propName = prop.Name.Replace("__", " ").Replace("_", "-");
+                    string propName = prop.Name.Replace("___", "&").Replace("__", " ").Replace("_", "-");
                     WeightedPhrase key = new WeightedPhrase(propName, propName.Length);
-                    string value = (string) prop.GetValue(data);
+                    string value = (string)prop.GetValue(data);
                     destination[key] = value;
                 }
             }

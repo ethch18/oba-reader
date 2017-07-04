@@ -1,4 +1,6 @@
-﻿/* Input conventions: replace all spaces with __ (two underscores) and all dashes with _ (one underscore) */
+﻿/* Input conventions: replace all spaces with __ (two underscores),
+  all dashes with _ (one underscore),
+  and all ampersands with ___ (three underscores) */
 {
   "university__of__washington": "華盛頓大學",
 
@@ -26,7 +28,7 @@
   "high__school": "中學",
   "laurelhurst": "月桂樹林中小丘",
   "mount__baker": "麵包山",
-  "park__&__ride": "泊車轉乘",
+  "park_______ride": "泊車轉乘",
   "the__landing": "登陸",
   "wallingford": "沃靈福德",
 
@@ -59,6 +61,7 @@
   "tahlequah": "塔勒",
 
   "airfield": "機場",
+  "avondale": "埃文代爾",
   "bellevue": "貝爾維尤",
   "broadway": "百老匯",
   "cascadia": "卡斯卡迪亞",
@@ -135,6 +138,7 @@
   "shuttle": "穿梭",
   "sounder": "聲音",
   "special": "特班車",
+  "stadium": "球場",
   "station": "站",
   "stevens": "司提反",
   "terrace": "陽台",
@@ -161,6 +165,7 @@
   "cherry": "櫻桃",
   "church": "教會",
   "colman": "科爾曼",
+  "dupont": "杜邦",
   "duvall": "杜瓦爾",
   "fedway": "聯邦道",
   "friday": "星期五",
@@ -273,6 +278,7 @@
   "shaw": "肖",
   "tech": "科技",
   "town": "市",
+  "tram": "電車",
   "road": "路",
   "sand": "沙",
   "star": "星",
@@ -289,8 +295,9 @@
   "ave": "大街",
   "bar": "條",
   "fhs": "第一山",
+  "fir": "冷杉",
   "gig": "演出",
-  "p&r": "泊車轉乘",
+  "p___r": "泊車轉乘",
   "pac": "太平",
   "sch": "西雅圖兒童醫院",
   "slu": "南湖聯合",

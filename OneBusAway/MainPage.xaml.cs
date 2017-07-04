@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.System;
 using Windows.Web.Http;
+using Windows.UI.Xaml.Media;
+using Windows.UI;
 
 namespace OneBusAway
 {
@@ -139,7 +139,7 @@ namespace OneBusAway
             }
         }
 
-        /** Refreshes all data with the OneBusAway server. */
+        /** Refreshes all data with the servers. */
         private async void EVENTrefreshData(object sender, object e)
         {
             if (timer10.IsEnabled)
@@ -153,19 +153,45 @@ namespace OneBusAway
                 List<string> vehicleId = new List<string>();
                 for (int i = 0; i < STATIONS.Count; i++)
                 {
-                    string url = "http://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/"
-                    + STATIONS[i] +
-                    ".xml?key=09ce661b-1d78-4fc4-a77b-7c55455acadb&minutesBefore=1&minutesAfter=120&&includeReferences=false";
-                    string webText = await websiteReader(url, true);
-                    List<string> arrivalChunk = XMLReader(webText, "arrivalAndDeparture", MAX_STATIONS);
-                    for (int j = 0; j < arrivalChunk.Count; j++)
+                    string station = STATIONS[i];
+                    if (station.Substring(0, 2) == "T_")
                     {
-                        predicted.Add(XMLReader(arrivalChunk[j], "predictedDepartureTime", 1)[0]);
-                        scheduled.Add(XMLReader(arrivalChunk[j], "scheduledDepartureTime", 1)[0]);
-                        routeNumber1.Add(XMLReader(arrivalChunk[j], "routeShortName", 1)[0]);
-                        routeNumber2.Add(XMLReader(arrivalChunk[j], "routeLongName", 1)[0]);
-                        destination.Add(XMLReader(arrivalChunk[j], "tripHeadsign", 1)[0]);
-                        vehicleId.Add(XMLReader(arrivalChunk[j], "vehicleId", 1)[0]);
+                        // Hong Kong Tramways
+                        string url = "https://hktramways.com/nextTram/geteat.php?stop_code="
+                            + station.Substring(2);
+                        string webText = await websiteReader(url, true);
+                        List<String> arrivals = XMLReader(webText, 0);
+                        if (arrivals[0] != "")
+                        {
+                            scheduled.AddRange(arrivals);
+                            for (int j = 0; j < arrivals.Count; j++)
+                            {
+                                destination.Add("!" + XMLReader(webText, 1)[j]
+                                    + "!!" + XMLReader(webText, 2)[j]);
+                                predicted.Add("0");
+                                routeNumber1.Add("Tram");
+                                routeNumber2.Add("Tram");
+                            }
+                            vehicleId.AddRange(XMLReader(webText, 3));
+                        }
+                    }
+                    else
+                    {
+                        // Pugetsound
+                        string url = "http://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/"
+                        + station +
+                        ".xml?key=09ce661b-1d78-4fc4-a77b-7c55455acadb&minutesBefore=1&minutesAfter=120&&includeReferences=false";
+                        string webText = await websiteReader(url, true);
+                        List<string> arrivalChunk = XMLReader(webText, "arrivalAndDeparture", MAX_STATIONS);
+                        for (int j = 0; j < arrivalChunk.Count; j++)
+                        {
+                            predicted.Add(XMLReader(arrivalChunk[j], "predictedDepartureTime", 1)[0]);
+                            scheduled.Add(XMLReader(arrivalChunk[j], "scheduledDepartureTime", 1)[0]);
+                            routeNumber1.Add(XMLReader(arrivalChunk[j], "routeShortName", 1)[0]);
+                            routeNumber2.Add(XMLReader(arrivalChunk[j], "routeLongName", 1)[0]);
+                            destination.Add(XMLReader(arrivalChunk[j], "tripHeadsign", 1)[0]);
+                            vehicleId.Add(XMLReader(arrivalChunk[j], "vehicleId", 1)[0]);
+                        }
                     }
                 }
                 List<long> arrival = new List<long>();
@@ -303,17 +329,13 @@ namespace OneBusAway
             EVENTrefreshData(null, null);
         }
 
-        private void EVENTtimerToggleLanguage(object sender, object e)
-        {
-            CHINESE = !CHINESE;
-        }
-
         /** Reads the raw text from a website from a given url. */
         private async Task<string> websiteReader(string url, bool forceSuccess)
         {
             string input = "", message = "";
             int i = 0;
-            while (!input.Contains("<code>200</code>") && (forceSuccess || i < 5))
+            while (!(input.Contains("<code>200</code>") || input.Contains("<root"))
+                && (forceSuccess || i < 5))
             {
                 await Task.Delay(500);
                 try
@@ -354,6 +376,64 @@ namespace OneBusAway
             if (n == 1 && returnList.Count == 0)
                 returnList.Add("");
             return returnList;
+        }
+
+        private List<string> XMLReader(string text, int data)
+        {
+            List<string> returnList = new List<string>();
+            int i = 0;
+            string tag;
+            double timeDiff = (DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
+            switch (data)
+            {
+                case 0:
+                    tag = "arrive_in_second=\"";
+                    break;
+                case 1:
+                    tag = "tram_dest_en=\"";
+                    break;
+                case 2:
+                    tag = "tram_dest_tc=\"";
+                    break;
+                case 3:
+                    tag = "tram_id=\"";
+                    break;
+                default:
+                    tag = "";
+                    break;
+            }
+            int tagLength = tag.Length;
+            while (text.Contains(tag))
+            {
+                int begin = text.IndexOf(tag) + tagLength;
+                text = text.Substring(begin);
+                int end = text.IndexOf("\"");
+                string s = text.Remove(end);
+                if (data == 0)
+                {
+                    int seconds = (int)getLongFromString(s);
+                    s = Math.Round(timeDiff + seconds * 1000).ToString();
+                }
+                if (data == 1)
+                {
+                    s = s.Replace("Terminus B", "(East)");
+                    s = s.Replace("Terminus K", "(West)");
+                    s = s.Replace("Terminus", "");
+                }
+                if (data == 2)
+                    s = s.Replace("總站", "");
+                text = text.Substring(end);
+                returnList.Add(s);
+                i++;
+            }
+            if (returnList.Count == 0)
+                returnList.Add("");
+            return returnList;
+        }
+
+        private void EVENTtimerToggleLanguage(object sender, object e)
+        {
+            CHINESE = !CHINESE;
         }
 
         /** Converts a string of numbers to a long. */
@@ -409,6 +489,15 @@ namespace OneBusAway
         private string textCheck(string text)
         {
             if (text == null)
+                text = "";
+            if (text.Contains("!") && text.Length > 3)
+            {
+                if (CHINESE)
+                    text = text.Substring(text.IndexOf("!!") + 2);
+                else
+                    text = text.Substring(1, text.IndexOf("!!") - 1);
+            }
+            else if (text.Contains("!"))
                 text = "";
             if (CHINESE)
                 text = translate(text);
@@ -480,19 +569,26 @@ namespace OneBusAway
         private async void addStation(string station, bool forceSuccess = false)
         {
             enableControls(false);
+            string stopName = "";
             if (!station.Contains("_"))
                 station = "1_" + station;
-            string url = "http://api.pugetsound.onebusaway.org/api/where/stop/"
-                + station +
-                ".xml?key=09ce661b-1d78-4fc4-a77b-7c55455acadb&&includeReferences=false";
-            string text = "";
-            text = await websiteReader(url, forceSuccess);
-            List<string> stop = XMLReader(text, "name", 1);
-            if (stop[0] != "")
+            if (station.Substring(0, 2) == "T_")
+                stopName = getTramStopName(station.Substring(2));
+            else
+            {
+                string url = "http://api.pugetsound.onebusaway.org/api/where/stop/"
+                    + station +
+                    ".xml?key=09ce661b-1d78-4fc4-a77b-7c55455acadb&&includeReferences=false";
+                string text = "";
+                text = await websiteReader(url, forceSuccess);
+                List<string> stop = XMLReader(text, "name", 1);
+                stopName = stop[0];
+            }
+            if (stopName != "")
             {
                 Paragraph paragraph = new Paragraph();
                 Run run = new Run();
-                run.Text = station + " (" + stop[0] + ")";
+                run.Text = station + " (" + stopName + ")";
                 paragraph.Inlines.Add(run);
                 richTextBox.Blocks.Add(paragraph);
                 STATIONS.Add(station);
@@ -585,6 +681,254 @@ namespace OneBusAway
             sliderMaxArrivals.IsEnabled = enable;
             progressBar.Visibility = enable ? Visibility.Collapsed : Visibility.Visible;
             textBox.Focus(FocusState.Keyboard);
+        }
+        private string getTramStopName(string id)
+        {
+            switch (id)
+            {
+                case "KTT":
+                    return "堅尼地城總站";
+                case "01E":
+                    return "北街";
+                case "03E":
+                    return "荷蘭街";
+                case "05E":
+                    return "皇后大道西";
+                case "07E":
+                    return "山道";
+                case "WST":
+                    return "石塘咀總站";
+                case "09E":
+                    return "屈地街";
+                case "11E":
+                    return "水街";
+                case "13E":
+                    return "西邊街";
+                case "15E":
+                    return "東邊街";
+                case "17E":
+                    return "皇后街";
+                case "19E":
+                    return "港澳碼頭";
+                case "WMT":
+                    return "上環 (西港城) 總站";
+                case "21E":
+                    return "禧利街";
+                case "23E":
+                    return "機利文街";
+                case "25E":
+                    return "租庇利街";
+                case "27E":
+                    return "畢打街";
+                case "29E":
+                    return "雪廠街";
+                case "31E":
+                    return "銀行街";
+                case "33E":
+                    return "美利道";
+                case "35E":
+                    return "金鐘港鐵站";
+                case "37E":
+                    return "軍器廠街";
+                case "39E":
+                    return "分域街";
+                case "41E":
+                    return "盧押道";
+                case "43E":
+                    return "柯布連道";
+                case "45E":
+                    return "菲林明道";
+                case "47E":
+                    return "杜老誌道";
+                case "49E":
+                    return "堅拿道西";
+                case "105":
+                    return "富明街";
+                case "106":
+                    return "禮頓道";
+                case "107":
+                    return "樂活道";
+                case "108":
+                    return "黃泥涌道";
+                case "HVT_B":
+                    return "跑馬地總站";
+                case "109":
+                    return "天主教墳場";
+                case "110":
+                    return "皇后大道東";
+                case "111":
+                    return "摩利臣山道";
+                case "112":
+                    return "天樂里";
+                case "51E":
+                    return "波斯富街";
+                case "53E":
+                    return "百德新街";
+                case "55E":
+                    return "信德街";
+                case "57E":
+                    return "維多利亞公園";
+                case "59E":
+                    return "興發街";
+                case "61E":
+                    return "永興街";
+                case "63E":
+                    return "木星街";
+                case "65E":
+                    return "炮台山";
+                case "67E":
+                    return "春秧街";
+                case "69E":
+                    return "北角道";
+                case "71E":
+                    return "書局街";
+                case "73E":
+                    return "電照街";
+                case "75E":
+                    return "健康西街";
+                case "77E":
+                    return "健康東街";
+                case "79E":
+                    return "渣華道";
+                case "81E":
+                    return "芬尼街";
+                case "83E":
+                    return "柏架山道";
+                case "85E":
+                    return "船塢里";
+                case "87E":
+                    return "康山";
+                case "89E":
+                    return "太古城道";
+                case "91E":
+                    return "太康街";
+                case "93E":
+                    return "太安街";
+                case "95E":
+                    return "海富街";
+                case "97E":
+                    return "西灣河電車廠";
+                case "99E":
+                    return "南康街";
+                case "101E":
+                    return "柴灣道";
+                case "SKT":
+                    return "筲箕灣總站";
+                case "02W":
+                    return "柴灣道";
+                case "04W":
+                    return "新成街";
+                case "06W":
+                    return "海富街";
+                case "08W":
+                    return "聖十字徑";
+                case "10W":
+                    return "太康街";
+                case "12W":
+                    return "太古城道";
+                case "14W":
+                    return "康山";
+                case "16W":
+                    return "船塢里";
+                case "18W":
+                    return "柏架山道";
+                case "20W":
+                    return "芬尼街";
+                case "22W":
+                    return "渣華道";
+                case "24W":
+                    return "健康東街";
+                case "26W":
+                    return "健康西街";
+                case "28W":
+                    return "電照街";
+                case "30W":
+                    return "書局街";
+                case "NPT":
+                    return "北角總站";
+                case "32W":
+                    return "北角道";
+                case "34W":
+                    return "炮台山";
+                case "36W":
+                    return "木星街";
+                case "38W":
+                    return "琉璃街";
+                case "40W":
+                    return "留仙街";
+                case "42W":
+                    return "維多利亞公園";
+                case "44W":
+                    return "信德街";
+                case "CBT":
+                    return "銅鑼灣總站";
+                case "46W":
+                    return "邊寧頓街";
+                case "48W":
+                    return "百德新街";
+                case "HVT_K":
+                    return "跑馬地總站";
+                case "50W":
+                    return "堅拿道西";
+                case "52W":
+                    return "杜老誌道";
+                case "54W":
+                    return "巴路士街";
+                case "56W":
+                    return "柯布連道";
+                case "58W":
+                    return "汕頭街";
+                case "60W":
+                    return "機利臣街";
+                case "62W":
+                    return "軍器廠街";
+                case "64W":
+                    return "金鐘港鐵站";
+                case "66W":
+                    return "紅棉道";
+                case "68W":
+                    return "銀行街";
+                case "70W":
+                    return "畢打街";
+                case "72W":
+                    return "砵甸乍街";
+                case "74W":
+                    return "機利文街";
+                case "76W":
+                    return "文華里";
+                case "WM":
+                    return "上環 (西港城) 總站";
+                case "78W":
+                    return "港澳碼頭";
+                case "80W":
+                    return "干諾道西 ";
+                case "82W":
+                    return "修打蘭街";
+                case "84W":
+                    return "東邊街";
+                case "86W":
+                    return "西邊街";
+                case "88W":
+                    return "水街";
+                case "90W":
+                    return "屈地街";
+                case "92W":
+                    return "山道";
+                case "94W":
+                    return "屈地街電車廠";
+                case "96W":
+                    return "皇后大道西";
+                case "98W":
+                    return "堅尼地城海傍";
+                case "100W":
+                    return "山市街";
+                case "102W":
+                    return "士美菲路";
+                case "104W":
+                    return "爹核士街";
+                default:
+                    return "";
+            }
         }
 
         private void changeFontSize(double size)
