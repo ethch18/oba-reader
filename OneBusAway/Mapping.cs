@@ -44,6 +44,7 @@ namespace OneBusAway
         public string arlington { get; set; }
         public string boulevard { get; set; }
         public string bremerton { get; set; }
+        public string broadview { get; set; }
         public string brickyard { get; set; }
         public string community { get; set; }
         public string connector { get; set; }
@@ -181,6 +182,7 @@ namespace OneBusAway
         public string square { get; set; }
         public string street { get; set; }
         public string summit { get; set; }
+        public string sunset { get; set; }
         public string tacoma { get; set; }
         public string timber { get; set; }
         public string uptown { get; set; }
@@ -214,6 +216,7 @@ namespace OneBusAway
         public string north { get; set; }
         public string orcas { get; set; }
         public string pearl { get; set; }
+        public string place { get; set; }
         public string point { get; set; }
         public string purdy { get; set; }
         public string ridge { get; set; }

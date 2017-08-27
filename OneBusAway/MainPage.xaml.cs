@@ -25,6 +25,27 @@ namespace OneBusAway
             radioL1.IsChecked = true;
             checkEnglish.IsChecked = true;
             checkAutoFontSize.IsChecked = true;
+            // bool t1 = (bool)readSetting("textDefault", 2);
+            // bool t2 = (bool)readSetting("textLowercase", 2);
+            // bool t3 = (bool)readSetting("textUppercase", 2);
+            // radioL1.IsChecked = t1;
+            // radioL2.IsChecked = t2;
+            // radioL3.IsChecked = t3;
+            // if (!t1 && !t2 && !t3)
+            //    radioL1.IsChecked = true;
+            // bool l1 = (bool)readSetting("langEnglish", 2);
+            // bool l2 = (bool)readSetting("langChinese", 2);
+            // checkEnglish.IsChecked = l1;
+            // checkChinese.IsChecked = l2;
+            // if (!l1 && !l2)
+            //    checkEnglish.IsChecked = true;
+            // toggleSeconds.IsOn = (bool)readSetting("seconds", 2);
+            // toggleOneArrival.IsOn = (bool)readSetting("oneArrival", 2);
+            // int maxArrivals = (int)readSetting("maxArrivals", 0);
+            // sliderMaxArrivals.Value = maxArrivals < 1 || maxArrivals > 100 ? 8 : maxArrivals;
+            // checkAutoFontSize.IsChecked = (bool)readSetting("autoFontSize", 2);
+            // int fontSize = (int)readSetting("fontSize", 0);
+            // sliderFontSize.Value = fontSize < 1 || fontSize > 96 ? 48 : fontSize;
             for (int i = 0; i < 100; i++)
             {
                 RowDefinition row = new RowDefinition();
@@ -67,7 +88,16 @@ namespace OneBusAway
             timer10.Start();
             timerToggle.Tick += EVENTtimerToggleLanguage;
             timerToggle.Interval = new TimeSpan(0, 0, 0, 5);
-            addStation("1_558", true);
+            int numberOfStops = (int)readSetting("numberOfStops", 0);
+            if (numberOfStops == 0)
+                addStation("1_558", true);
+            else
+                for (int i = 0; i < numberOfStops; i++)
+                {
+                    string stop = (string)readSetting("stop" + i, 1);
+                    if (stop.Length > 0)
+                        addStation(stop, true);
+                }
         }
 
         private List<string> STATIONS = new List<string>();     // stations user selected
@@ -90,6 +120,8 @@ namespace OneBusAway
         private DispatcherTimer timerToggle = new DispatcherTimer(); // used to alternate between Chinese / English text
         private bool CHINESE = false;
         private Random RANDOM = new Random(); // an instance of an rng
+        Windows.Storage.ApplicationDataContainer LOCALSETTINGS =
+            Windows.Storage.ApplicationData.Current.LocalSettings; // app settings
 
         /** Refreshes all text blocks. */
         private void EVENTrefreshText(object sender, object e)
@@ -142,6 +174,7 @@ namespace OneBusAway
         /** Refreshes all data with the servers. */
         private async void EVENTrefreshData(object sender, object e)
         {
+            // updateSettings();
             if (timer10.IsEnabled)
             {
                 timer10.Stop();
@@ -243,6 +276,7 @@ namespace OneBusAway
             STATIONS.Clear();
             richTextBox.Blocks.Clear();
             EVENTrefreshData(null, null);
+            LOCALSETTINGS.Values["numberOfStops"] = 0;
         }
 
         private async void EVENTbuttonAddRandom(object sender, RoutedEventArgs e)
@@ -593,6 +627,8 @@ namespace OneBusAway
                 richTextBox.Blocks.Add(paragraph);
                 STATIONS.Add(station);
                 EVENTrefreshData(null, null);
+                LOCALSETTINGS.Values["numberOfStops"] = STATIONS.Count;
+                LOCALSETTINGS.Values["stop" + (STATIONS.Count - 1)] = station;
             }
             else
             {
@@ -615,6 +651,91 @@ namespace OneBusAway
                 catch { }
             }
             enableControls(true);
+        }
+
+        // 0 for numeric, 1 for string, 2 for boolean
+        private Object readSetting(string tag, int type)
+        {
+            Object setting = LOCALSETTINGS.Values[tag];
+            if (setting != null)
+                try
+                {
+                    switch (type)
+                    {
+                        default:
+                        case 0:
+                            return (int)setting;
+                        case 1:
+                            return (string)setting;
+                        case 2:
+                            return (bool)setting;
+                    }
+                }
+                catch { }
+            switch (type)
+            {
+                default:
+                case 0:
+                    return 0;
+                case 1:
+                    return "";
+                case 2:
+                    return false;
+            }
+        }
+
+        private void updateSettings()
+        {
+            try
+            {
+                LOCALSETTINGS.Values["textDefault"] = radioL1.IsChecked;
+            }
+            catch { }
+            try
+            {
+                LOCALSETTINGS.Values["textLowercase"] = radioL2.IsChecked;
+            }
+            catch { }
+            try
+            {
+                LOCALSETTINGS.Values["textUppercase"] = radioL3.IsChecked;
+            }
+            catch { }
+            try
+            {
+                LOCALSETTINGS.Values["langEnglish"] = (bool)checkEnglish.IsChecked;
+            }
+            catch { }
+            try
+            {
+                LOCALSETTINGS.Values["langChinese"] = (bool)checkChinese.IsChecked;
+            }
+            catch { }
+            try
+            {
+                LOCALSETTINGS.Values["seconds"] = toggleSeconds.IsOn;
+            }
+            catch { }
+            try
+            {
+                LOCALSETTINGS.Values["oneArrival"] = toggleOneArrival.IsOn;
+            }
+            catch { }
+            try
+            {
+                LOCALSETTINGS.Values["maxArrivals"] = sliderMaxArrivals.Value;
+            }
+            catch { }
+            try
+            {
+                LOCALSETTINGS.Values["autoFontSize"] = (bool)checkAutoFontSize.IsChecked;
+            }
+            catch { }
+            try
+            {
+                LOCALSETTINGS.Values["fontSize"] = sliderFontSize.Value;
+            }
+            catch { }
         }
 
         private void EVENTtextBoxKeyDown(object sender, KeyRoutedEventArgs e)
@@ -958,7 +1079,7 @@ namespace OneBusAway
 
         private string translate(string s)
         {
-            s = this.controller.Gettext(s.ToLower());
+            s = controller.Gettext(s.ToLower());
 
             // 1
             if (!s.Contains("e 綫") && !s.Contains("e1"))

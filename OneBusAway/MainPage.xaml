@@ -40,13 +40,13 @@
                     <TextBlock Text=""/>
 
                     <TextBlock Text="Maximum arrivals to show"/>
-                    <Slider x:Name="sliderMaxArrivals" Minimum="1" ValueChanged="EVENTsliderMaxArrivalsChanged" Value="8" />
+                    <Slider x:Name="sliderMaxArrivals" Minimum="1" ValueChanged="EVENTsliderMaxArrivalsChanged" Value="8"/>
 
                     <TextBlock Text=""/>
 
                     <TextBlock Text="Font size"/>
                     <CheckBox x:Name="checkAutoFontSize" Content="Auto" Checked="EVENTcheckBoxFontSizeChanged" Unchecked="EVENTcheckBoxFontSizeChanged"/>
-                    <Slider x:Name="sliderFontSize" Minimum="1" ValueChanged="EVENTsliderFontSizeValueChanged" Value="48" Maximum="96" IsEnabled="False" />
+                    <Slider x:Name="sliderFontSize" Minimum="1" ValueChanged="EVENTsliderFontSizeValueChanged" Maximum="96" Value="48"/>
 
                     <TextBlock Text=""/>
 
