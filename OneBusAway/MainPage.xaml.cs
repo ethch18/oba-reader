@@ -213,7 +213,7 @@ namespace OneBusAway
                         // Pugetsound
                         string url = "http://api.pugetsound.onebusaway.org/api/where/arrivals-and-departures-for-stop/"
                         + station +
-                        ".xml?key=09ce661b-1d78-4fc4-a77b-7c55455acadb&minutesBefore=1&minutesAfter=120&&includeReferences=false";
+                        ".xml?key=09ce661b-1d78-4fc4-a77b-7c55455acadb&minutesBefore=0&minutesAfter=120&&includeReferences=false";
                         string webText = await websiteReader(url, true);
                         List<string> arrivalChunk = XMLReader(webText, "arrivalAndDeparture", MAX_STATIONS);
                         for (int j = 0; j < arrivalChunk.Count; j++)
