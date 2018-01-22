@@ -79,7 +79,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <CommandBar Background="#00000000" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+        <CommandBar Background="#00000000" Grid.ColumnSpan="3" HorizontalAlignment="Left">
             <AppBarButton Click="EVENTbuttonRefresh" Icon="Refresh" Label="Refresh"/>
             <AppBarButton Icon="Setting" Label="Settings" Flyout="{StaticResource FlyoutBase1}"/>
         </CommandBar>

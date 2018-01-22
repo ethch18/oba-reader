@@ -9,6 +9,8 @@ using Windows.System;
 using Windows.Web.Http;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
+using Windows.ApplicationModel.Core;
+using Windows.UI.ViewManagement;
 
 namespace OneBusAway
 {
@@ -19,6 +21,20 @@ namespace OneBusAway
         {
             InitializeComponent();
             Task.Run(() => this.controller = new TranslationController());
+            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.XamlCompositionBrushBase"))
+            {
+                Windows.UI.Xaml.Media.AcrylicBrush myBrush = new Windows.UI.Xaml.Media.AcrylicBrush();
+                myBrush.BackgroundSource = Windows.UI.Xaml.Media.AcrylicBackgroundSource.HostBackdrop;
+                myBrush.TintColor = Color.FromArgb(255, 255, 255, 255);
+                myBrush.FallbackColor = Color.FromArgb(255, 255, 255, 255);
+                myBrush.TintOpacity = 0.6;
+                gridMain.Background = myBrush;
+            }
+            else
+            {
+                SolidColorBrush myBrush = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+                gridMain.Background = myBrush;
+            }
             buttonAdd.Content = new SymbolIcon(Symbol.Add);
             buttonAddRandom.Content = new SymbolIcon(Symbol.Shuffle);
             buttonAddPreset.Content = new SymbolIcon(Symbol.List);

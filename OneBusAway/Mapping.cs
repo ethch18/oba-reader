@@ -221,6 +221,7 @@ namespace OneBusAway
         public string purdy { get; set; }
         public string ridge { get; set; }
         public string river { get; set; }
+        public string route { get; set; }
         public string shore { get; set; }
         public string south { get; set; }
         public string super { get; set; }
@@ -316,5 +317,9 @@ namespace OneBusAway
         public string up { get; set; }
         public string uw { get; set; }
         public string va { get; set; }
+        public string n { get; set; }
+        public string e { get; set; }
+        public string s { get; set; }
+        public string w { get; set; }
     }
 }
